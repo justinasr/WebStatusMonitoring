@@ -1,5 +1,8 @@
 import subprocess
 
+RECIPIENT = 'justinas.rumsevicius@cern.ch'
+SIGNATURE = '\n\nSincerely,\nStatus checker at http://instance4:5000'
+
 
 def get_color_for_code(code):
     if code == 200:
@@ -13,15 +16,7 @@ def get_color_for_code(code):
         return '#F5D76E'
 
 
-def notify(targets):
-    msg = ""
-    for target in targets:
-        if target['code'] != 200:
-            msg += '%s is not ok. It returned code %s. \n' % (target['name'], target['code'])
-
-    if len(msg) == 0:
-        return
-
-    msg += '\n\nSincerely,\nCron job at http://instance4:5000'
-    p1 = subprocess.Popen(["echo", msg], stdout=subprocess.PIPE)
-    subprocess.Popen(["mail", "-s", "Some services are not ok", 'justinas.rumsevicius@cern.ch'], stdin=p1.stdout, stdout=subprocess.PIPE)
+def notify(subject, text, recipient=RECIPIENT):
+    text += SIGNATURE
+    p1 = subprocess.Popen(['echo', text], stdout=subprocess.PIPE)
+    subprocess.Popen(['mail', '-s', subject, recipient], stdin=p1.stdout, stdout=subprocess.PIPE)

@@ -15,14 +15,12 @@ class Status(Resource):
                 target['code'] = -1
                 target['checked'] = ''
                 target['color'] = ''
-                target['output'] = ''
                 continue
 
             newest_log = target_logs[0]
             target['code'] = newest_log['code']
             target['checked'] = newest_log['date'][:16]
             target['color'] = get_color_for_code(newest_log['code'])
-            target['output'] = len(newest_log['output'])
 
         return targets
 
@@ -35,6 +33,5 @@ class Logs(Resource):
         for log in all_logs:
             log['date'] = log['date'][:16]
             log['color'] = get_color_for_code(log['code'])
-            log['output'] = len(log['output'])
 
         return all_logs

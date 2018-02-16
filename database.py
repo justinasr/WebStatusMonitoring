@@ -3,14 +3,13 @@ import datetime
 import os.path
 
 CREATE_TABLE_QUERY = """
-CREATE TABLE check_log (
-    target_id VARCHAR(127),
-    name VARCHAR(127),
-    url VARCHAR(255),
-    code INTEGER,
-    date DATETIME,
-    output TEXT
-);
+    CREATE TABLE check_log (
+        target_id VARCHAR(127),
+        name VARCHAR(127),
+        url VARCHAR(255),
+        code INTEGER,
+        date DATETIME
+    );
 """
 
 
@@ -45,10 +44,10 @@ class Database:
         c = conn.cursor()
         if target_id is None:
             t = (limit,)
-            c.execute('SELECT target_id, name, url, code, date, output FROM check_log ORDER BY date DESC LIMIT ?', t)
+            c.execute('SELECT target_id, name, url, code, date FROM check_log ORDER BY date DESC LIMIT ?', t)
         else:
             t = (target_id, limit)
-            c.execute('SELECT target_id, name, url, code, date, output FROM check_log WHERE target_id=? ORDER BY date DESC LIMIT ?', t)
+            c.execute('SELECT target_id, name, url, code, date FROM check_log WHERE target_id=? ORDER BY date DESC LIMIT ?', t)
 
         result = c.fetchall()
         conn.close()
@@ -57,7 +56,7 @@ class Database:
     def add_entry_for_target(self, target_dict):
         conn = self.get_connection()
         c = conn.cursor()
-        t = (target_dict['target_id'], target_dict['name'], target_dict['url'], target_dict['code'], datetime.datetime.now(), target_dict['output'])
-        c.execute('INSERT INTO check_log VALUES (?, ?, ?, ?, ?, ?)', t)
+        t = (target_dict['target_id'], target_dict['name'], target_dict['url'], target_dict['code'], datetime.datetime.now())
+        c.execute('INSERT INTO check_log VALUES (?, ?, ?, ?, ?)', t)
         conn.commit()
         conn.close()
