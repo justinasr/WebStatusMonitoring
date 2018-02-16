@@ -2,7 +2,7 @@ from flask_restful import Resource
 import json
 import urllib2
 from database import Database
-import subprocess
+from utils import notify
 
 
 class UpdateStatus(Resource):
@@ -10,31 +10,19 @@ class UpdateStatus(Resource):
         pass
 
     def make_request(self, url):
-        result = urllib2.urlopen(url)
-        return result
-
-    def get_code(self, url):
         try:
-            code = self.make_request(url).getcode()
+            response = urllib2.urlopen(url)
+            code = response.getcode()
+            output = response.read()
+            response.close()
         except urllib2.HTTPError as ex:
             code = ex.code
+            output = ''
         except Exception as ex:
             code = -1
+            output = ''
 
-        return code
-
-    def notify(self, targets):
-        msg = ""
-        for target in targets:
-            if target['code'] != 200:
-                msg += '%s is not ok. It returned code %s. \n' % (target['name'], target['code'])
-
-        if len(msg) == 0:
-            return
-
-        msg += '\n\nSincerely,\nCron job at http://instance4:5000'
-        p1 = subprocess.Popen(["echo", msg], stdout=subprocess.PIPE)
-        subprocess.Popen(["mail", "-s", "Some services are not ok", 'justinas.rumsevicius@cern.ch'], stdin=p1.stdout, stdout=subprocess.PIPE)
+        return (code, output)
 
     def get(self, target_name=None):
         targets = json.load(open('targets.json'))
@@ -44,11 +32,13 @@ class UpdateStatus(Resource):
             if target_name is not None and target['target_id'] != target_name:
                 continue
 
-            target['code'] = self.get_code(target['url'])
+            code, output = self.make_request(target['url'])
+            target['code'] = code
+            target['output'] = output
             db.add_entry_for_target(target)
-
+            target['output'] = len(output)
             updated_targets.append(target)
 
-        self.notify(updated_targets)
+        notify(updated_targets)
 
-        return str(updated_targets)
+        return updated_targets
