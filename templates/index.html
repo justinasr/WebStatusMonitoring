@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Status</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            // var time = 1000 * 60 * 3; // Every 3 minutes 
+            // var timeout = setTimeout("location.reload(true);", time);
+            // function resetTimeout() {
+            //     clearTimeout(timeout);
+            //     timeout = setTimeout("location.reload(true);", time);
+            // }
+
+            function updateTarget(target_id){
+                $.ajax({type: 'GET', url: "/update_status/" + target_id, success: function(result){
+                    var time = 1000 * 1;
+                    setTimeout("location.reload(true);", time);
+                }});
+            };
+        </script>
+        <style>
+            .card-footer{
+                position:absolute;
+                bottom:0;
+                width:100%;
+            }
+            .card-deck .card{
+                padding-bottom:58px;
+            }
+            .btn {
+                padding: 4px 8px;
+                margin-left: 3px;
+                margin-right: 3px;
+            }
+
+            @media (max-width: 575px) {
+                .card.invisible {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1 class="text-center">Is stuff ok?</h1>
+        <div class="container">
+            {% for entry in targets %}
+                {% if loop.index0 % 4 == 0 %}
+                <div class="card-deck mt-2">
+                {% endif %}
+                <div style="background-color:{{ entry.color }};" class="card text-center">
+                    <div style="padding: 5px;" class="card-block">
+                        <h4 class="card-title">{{ entry.name }}</h4>
+                        <p class="card-text">
+                        {% if entry.code == 200 %}
+                            Looks fine.
+                        {% elif entry.code == -1 %}
+                            Appears to be dead...
+                        {% else %}
+                            Returns error code "<b>{{ entry.code }}</b>".
+                        {% endif %}
+                        <br>
+                        Checked: {{ entry.checked }}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="btn btn-primary" onclick=updateTarget("{{ entry.target_id }}")>Update now</a>
+                        <a href="{{ entry.url }}" class="btn btn-primary">Go there</a>
+                    </div>
+                </div>
+                {% if (loop.index0 + 1) % 4 == 0 %}
+                </div>
+                {% endif %}
+            {% endfor %}
+
+            {% if loop.length is not divisibleby 4 %}
+                {% for n in range(4 - loop.length % 4) %}
+                    <div class="card invisible"></div>
+                {% endfor %}
+                </div>
+            {% endif %}
+            <button class="btn btn-primary mt-2" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Toggle all logs</button>
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <table class="table mt-2">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Date</th>
+                            <th>Instance</th>
+                            <th>Code</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in all_logs %}
+                            <tr>
+                                <td style="padding:0; margin:0; width:1px; background-color:{{ entry.color }};"></td>
+                                <td>{{ entry.date }}</td>
+                                <td>{{ entry.name }}</td>
+                                <td>{{ entry.code }}</td>
+                                <td>{{ entry.url }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div> 
+    </body>
+</html>

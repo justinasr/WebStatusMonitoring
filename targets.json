@@ -1,0 +1,17 @@
+[
+    {
+        "name": "McM Production website",
+        "url": "http://cms-pdmv.cern.ch/mcm/",
+        "target_id": "mcm-prod-web"
+    },
+    {
+        "name": "pMp Production website",
+        "url": "http://cms-pdmv.cern.ch/pmp/",
+        "target_id": "pmp-prod-web"
+    },
+    {
+        "name": "Stats website",
+        "url": "http://cms-pdmv.cern.ch/stats/",
+        "target_id": "stats-web"
+    }
+]
