@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Api
 from status import Status, Logs
 from update_status import UpdateStatus
@@ -9,6 +9,13 @@ api = Api(app)
 api.add_resource(Logs, '/get_logs', '/get_logs/<int:limit>', '/get_logs/<string:target_name>', '/get_logs/<string:target_name>/<int:limit>')
 api.add_resource(Status, '/get_status')
 api.add_resource(UpdateStatus, '/update_status', '/update_status/<string:target_name>')
+
+
+@app.route('/')
+def index(name=None):
+    targets = Status().get()
+    all_logs = Logs().get()
+    return render_template('index.html', targets=targets, all_logs=all_logs)
 
 
 def run_flask():

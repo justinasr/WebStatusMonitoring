@@ -76,8 +76,8 @@
                 {% endif %}
             {% endfor %}
 
-            {% if loop.length is not divisibleby 4 %}
-                {% for n in range(4 - loop.length % 4) %}
+            {% if (targets|length) % 4 != 0 %}
+                {% for n in range(4 - (targets|length) % 4) %}
                     <div class="card invisible"></div>
                 {% endfor %}
                 </div>

@@ -1,6 +1,5 @@
 from flask_restful import Resource
 import json
-import urllib2
 from database import Database
 from utils import notify
 import subprocess
@@ -29,9 +28,8 @@ class UpdateStatus(Resource):
             proc = subprocess.Popen(args, stdout=subprocess.PIPE)
             code = proc.communicate()[0]
             code = int(code)
-        except urllib2.HTTPError as ex:
-            code = ex.code
         except Exception as ex:
+            print('Exception while making a request to %s. %s', (url, ex))
             code = -1
 
         print('%s returned %d' % (url, code))
