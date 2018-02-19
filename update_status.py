@@ -15,11 +15,8 @@ class UpdateStatus(Resource):
 
     def get_sso_cookie(self):
         if not os.path.exists(COOKIE_FILE):
-            try:
-                args = ['cern-get-sso-cookie', '-u', SSO_COOKIE_URL, '-o', COOKIE_FILE, '--krb']
-                subprocess.Popen(args)
-            except Exception as ex:
-                print('Error getting cookie. Reason: %s' % (ex))
+            args = ['cern-get-sso-cookie', '-u', SSO_COOKIE_URL, '-o', COOKIE_FILE, '--krb']
+            subprocess.Popen(args)
 
     def make_request(self, url):
         self.get_sso_cookie()
@@ -28,11 +25,9 @@ class UpdateStatus(Resource):
             proc = subprocess.Popen(args, stdout=subprocess.PIPE)
             code = proc.communicate()[0]
             code = int(code)
-        except Exception as ex:
-            print('Exception while making a request to %s. %s', (url, ex))
+        except Exception:
             code = -1
 
-        print('%s returned %d' % (url, code))
         return code
 
     def get(self, target_name=None):
