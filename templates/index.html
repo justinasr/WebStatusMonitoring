@@ -46,6 +46,8 @@
     </head>
     <body>
         <h1 class="text-center">Is stuff ok?</h1>
+        <h5 class="text-center">WebStatusMonitoring</h5>
+        <h6 class="text-center">Running on Python {{ version }}</h6>
         <div class="container">
             {% for entry in targets %}
                 {% if loop.index0 % 4 == 0 %}

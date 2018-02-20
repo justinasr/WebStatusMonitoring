@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask_restful import Api
 from status import Status, Logs
 from update_status import UpdateStatus
+import platform
 
 app = Flask(__name__)
 api = Api(app)
@@ -15,7 +16,8 @@ api.add_resource(UpdateStatus, '/update_status', '/update_status/<string:target_
 def index(name=None):
     targets = Status().get()
     all_logs = Logs().get()
-    return render_template('index.html', targets=targets, all_logs=all_logs)
+    version = str(platform.python_version())
+    return render_template('index.html', targets=targets, all_logs=all_logs, version=version)
 
 
 def run_flask():
