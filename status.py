@@ -21,6 +21,7 @@ class Status(Resource):
             target['code'] = newest_log['code']
             target['checked'] = newest_log['date'][:16]
             target['color'] = get_color_for_code(newest_log['code'])
+            target['output_title'] = newest_log['output_title']
 
         return targets
 

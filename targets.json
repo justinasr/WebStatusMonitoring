@@ -1,17 +1,56 @@
 [
     {
         "name": "McM Production website",
-        "url": "http://cms-pdmv.cern.ch/mcm/",
-        "target_id": "mcm-prod-web"
+        "url": "https://cms-pdmv.cern.ch/mcm/",
+        "target_id": "mcm-prod-web",
+        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+    },
+    {
+        "name": "McM Production couchDB",
+        "url": "http://vocms090:5984/",
+        "target_id": "mcm-prod-couchdb",
+        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
     },
     {
         "name": "pMp Production website",
         "url": "http://cms-pdmv.cern.ch/pmp/",
-        "target_id": "pmp-prod-web"
+        "target_id": "pmp-prod-web",
+        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
     },
     {
         "name": "Stats website",
         "url": "http://cms-pdmv.cern.ch/stats/",
-        "target_id": "stats-web"
+        "target_id": "stats-web",
+        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+    },
+    {
+        "name": "Stats couchDB",
+        "url": "http://vocms084:5984",
+        "target_id": "stats-couchdb",
+        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+    },
+    {
+        "name": "Stats couchdb-lucene",
+        "url": "http://vocms084:5984/_fti/",
+        "target_id": "stats-couchdb-lucene",
+        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+    },
+    {
+        "name": "McM Development website",
+        "url": "http://cms-pdmv-dev.cern.ch/mcm/",
+        "target_id": "mcm-dev-web",
+        "sso_cookie_url": "https://cms-pdmv-dev.cern.ch/mcm/"
+    },
+    {
+        "name": "McM Development couchDB",
+        "url": "http://vocms085:5984/",
+        "target_id": "mcm-dev-couchdb",
+        "sso_cookie_url": "https://cms-pdmv-dev.cern.ch/mcm/"
+    },
+    {
+        "name": "pMp Development website",
+        "url": "http://cms-pdmv-dev.cern.ch/pmp/",
+        "target_id": "pmp-dev-web",
+        "sso_cookie_url": "https://cms-pdmv-dev.cern.ch/mcm/"
     }
 ]

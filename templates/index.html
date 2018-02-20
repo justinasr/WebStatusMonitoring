@@ -92,6 +92,7 @@
                             <th>Instance</th>
                             <th>Code</th>
                             <th>URL</th>
+                            <th>Output title</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -102,6 +103,7 @@
                                 <td>{{ entry.name }}</td>
                                 <td>{{ entry.code }}</td>
                                 <td>{{ entry.url }}</td>
+                                <td style="max-width: 300px;">{{ entry.output_title }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
