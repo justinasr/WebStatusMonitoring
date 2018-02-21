@@ -40,7 +40,7 @@ class UpdateStatus(Resource):
         try:
             cookie_file_name = self.get_sso_cookie_file_name(cookie_url)
             self.logger.info('Cookie file name for %s is "%s"' % (url, cookie_file_name))
-            args = ["curl", url, "-s", "-k", "-L", "-w", "%{http_code}", "-o", "/dev/null"]
+            args = ["curl", url, "-s", "-k", "-L", "-m", "60", "-w", "%{http_code}", "-o", "/dev/null"]
             if cookie_file_name:
                 self.logger.info('Append cookie "%s" while making request to %s' % (cookie_file_name, url))
                 args += ["--cookie", cookie_file_name]
@@ -50,7 +50,7 @@ class UpdateStatus(Resource):
             code = proc.communicate()[0]
             code = int(code)
 
-            args = ["curl", url, "-s", "-k", "-L"]
+            args = ["curl", url, "-s", "-k", "-L", "-m", "60"]
             if cookie_file_name:
                 args += ["--cookie", cookie_file_name]
 

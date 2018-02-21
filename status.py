@@ -15,7 +15,7 @@ class Status(Resource):
         db = Database()
         targets = json.load(open('targets.json'))
         for target in targets:
-            self.logger.info('Getting status for "%s"' % (target[name]))
+            self.logger.info('Getting status for "%s"' % (target['name']))
             target_logs = db.get_entries(target['target_id'], 1)
             if len(target_logs) == 0:
                 target['code'] = -1
