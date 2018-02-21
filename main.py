@@ -39,7 +39,7 @@ def run_flask():
     setup_logging()
     logger = logging.getLogger('logger')
     logger.info('Starting app...')
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 if __name__ == '__main__':

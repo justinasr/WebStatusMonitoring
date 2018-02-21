@@ -22,15 +22,24 @@ class UpdateStatus(Resource):
         if cookie_url in self.cookie_files:
             return self.cookie_files[cookie_url]
         else:
-            cookie_file_name = get_random_string()
+            self.logger.info('Will get cookie for %s' + (cookie_url))
+            cookie_file_name = 'cookies/' + get_random_string()
             while os.path.exists(cookie_file_name):
                 cookie_file_name = get_random_string()
 
-            args = ['cern-get-sso-cookie', '-u', '"' + cookie_url + '"', '-o', cookie_file_name, '--krb']
+            args = ['cern-get-sso-cookie', '-u', cookie_url, '-o', cookie_file_name, '--krb']
             args = ' '.join(args)
+            self.logger.info(args)
             subprocess.Popen(args, shell=True)
+            sleep_counter = 0
+            sleep_duration = 0.1
+            total_sleep_duration = 60
             while not os.path.exists(cookie_file_name):
-                time.sleep(0.1)
+                time.sleep(sleep_duration)
+                sleep_counter += 1
+                if sleep_counter * sleep_duration > total_sleep_duration:
+                    self.logger.error('Waiting for sso cookie file timeout (%ds). Will continue without cookie.' % (total_sleep_duration))
+                    break
 
             self.cookie_files[cookie_url] = cookie_file_name
             return cookie_file_name
@@ -46,6 +55,7 @@ class UpdateStatus(Resource):
                 args += ["--cookie", cookie_file_name]
 
             args = ' '.join(args)
+            self.logger.info(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
             code = proc.communicate()[0]
             code = int(code)
@@ -55,6 +65,7 @@ class UpdateStatus(Resource):
                 args += ["--cookie", cookie_file_name]
 
             args = ' '.join(args)
+            self.logger.info(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
             output_title = str(proc.communicate()[0])
             m = re.search('<title>(.*?)</title>', output_title)
@@ -94,9 +105,9 @@ class UpdateStatus(Resource):
         for cookie_url in self.cookie_files:
             try:
                 os.remove(self.cookie_files[cookie_url])
+                self.logger.info('Deleted "%s" for %s' % (self.cookie_files.get(cookie_url), cookie_url))
             except OSError as ex:
                 self.logger.error('Error deleting cookie file "%s" for "%s". Exception %s' % (self.cookie_files.get(cookie_url), cookie_url, ex))
-                pass
 
         self.parse_statuses(updated_targets)
         return updated_targets
