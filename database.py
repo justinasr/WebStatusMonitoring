@@ -1,6 +1,7 @@
 import sqlite3
 import datetime
 import os.path
+import logging
 
 CREATE_TABLE_QUERY = """
     CREATE TABLE check_log (
@@ -24,8 +25,10 @@ def dict_factory(cursor, row):
 class Database:
     def __init__(self, filename='Database.db'):
         self.filename = filename
+        self.logger = logging.getLogger('logger')
 
     def create_database(self):
+        self.logger.info('Database %s not found. Will create new.')
         conn = sqlite3.connect(self.filename)
         c = conn.cursor()
         c.execute(CREATE_TABLE_QUERY)
@@ -45,11 +48,13 @@ class Database:
         c = conn.cursor()
         if target_id is None:
             t = (limit,)
-            c.execute('SELECT target_id, name, url, code, date, output_title FROM check_log ORDER BY date DESC LIMIT ?', t)
+            query = 'SELECT target_id, name, url, code, date, output_title FROM check_log ORDER BY date DESC LIMIT ?'
         else:
             t = (target_id, limit)
-            c.execute('SELECT target_id, name, url, code, date, output_title FROM check_log WHERE target_id=? ORDER BY date DESC LIMIT ?', t)
+            query = 'SELECT target_id, name, url, code, date, output_title FROM check_log WHERE target_id=? ORDER BY date DESC LIMIT ?'
 
+        self.logger.info('Will execute "%s" with parameters "%s"' % (query, t))
+        c.execute(query, t)
         result = c.fetchall()
         conn.close()
         return result
@@ -58,6 +63,8 @@ class Database:
         conn = self.get_connection()
         c = conn.cursor()
         t = (target_dict['target_id'], target_dict['name'], target_dict['url'], target_dict['code'], datetime.datetime.now(), target_dict['output_title'])
-        c.execute('INSERT INTO check_log VALUES (?, ?, ?, ?, ?, ?)', t)
+        query = 'INSERT INTO check_log VALUES (?, ?, ?, ?, ?, ?)'
+        self.logger.info('Will execute "%s" with parameters "%s"' % (query, t))
+        c.execute(query, t)
         conn.commit()
         conn.close()
