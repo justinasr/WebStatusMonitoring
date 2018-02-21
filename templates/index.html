@@ -105,7 +105,7 @@
                                 <td>{{ entry.date }}</td>
                                 <td>{{ entry.name }}</td>
                                 <td>{{ entry.code }}</td>
-                                <td>{{ entry.url }}</td>
+                                <td><a href="{{ entry.url }}">{{ entry.url }}</a></td>
                                 <td style="max-width: 300px;">{{ entry.output_title }}</td>
                             </tr>
                         {% endfor %}
