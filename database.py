@@ -53,7 +53,6 @@ class Database:
             t = (target_id, limit)
             query = 'SELECT target_id, name, url, code, date, output_title FROM check_log WHERE target_id=? ORDER BY date DESC LIMIT ?'
 
-        self.logger.info('Will execute "%s" with parameters "%s"' % (query, t))
         c.execute(query, t)
         result = c.fetchall()
         conn.close()
@@ -64,7 +63,6 @@ class Database:
         c = conn.cursor()
         t = (target_dict['target_id'], target_dict['name'], target_dict['url'], target_dict['code'], datetime.datetime.now(), target_dict['output_title'])
         query = 'INSERT INTO check_log VALUES (?, ?, ?, ?, ?, ?)'
-        self.logger.info('Will execute "%s" with parameters "%s"' % (query, t))
         c.execute(query, t)
         conn.commit()
         conn.close()

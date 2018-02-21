@@ -30,7 +30,7 @@ def setup_logging():
     logger = logging.getLogger('logger')
     logger.setLevel(logging.INFO)
     handler = handlers.RotatingFileHandler(log_file_name, 'a', max_log_file_size, max_log_file_count)
-    formatter = logging.Formatter(fmt='[%(asctime)s][%(filename)s->%(funcName)s:%(lineno)d][%(levelname)s] %(message)s',datefmt='%d/%b/%Y:%H:%M:%S')
+    formatter = logging.Formatter(fmt='[%(asctime)s][%(filename)s->%(funcName)s:%(lineno)d][%(levelname)s] %(message)s', datefmt='%d/%b/%Y:%H:%M:%S')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 

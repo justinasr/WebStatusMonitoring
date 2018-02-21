@@ -29,7 +29,6 @@ class UpdateStatus(Resource):
 
             args = ['cern-get-sso-cookie', '-u', cookie_url, '-o', cookie_file_name, '--krb']
             args = ' '.join(args)
-            self.logger.info(args)
             subprocess.Popen(args, shell=True)
             sleep_counter = 0
             sleep_duration = 0.1
@@ -55,7 +54,6 @@ class UpdateStatus(Resource):
                 args += ["--cookie", cookie_file_name]
 
             args = ' '.join(args)
-            self.logger.info(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
             code = proc.communicate()[0]
             code = int(code)
@@ -65,7 +63,6 @@ class UpdateStatus(Resource):
                 args += ["--cookie", cookie_file_name]
 
             args = ' '.join(args)
-            self.logger.info(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
             output_title = str(proc.communicate()[0])
             m = re.search('<title>(.*?)</title>', output_title)
@@ -75,6 +72,7 @@ class UpdateStatus(Resource):
             else:
                 output_title = '<no title>'
 
+            self.logger.info('Finished request to %s. Code: %d, title: "%s"' % (url, code, output_title))
         except Exception as ex:
             self.logger.error('Got exception while making a request to %s. Exception %s' % (url, ex))
             code = -1
