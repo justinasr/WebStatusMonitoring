@@ -1,12 +1,9 @@
 from flask_restful import Resource
 import json
 from database import Database
-from utils import notify, get_random_string
+from utils import notify
 import subprocess
-import os.path
-import os
 import re
-import time
 import logging
 
 
@@ -15,43 +12,13 @@ class UpdateStatus(Resource):
         self.cookie_files = {}
         self.logger = logging.getLogger('logger')
 
-    def get_sso_cookie_file_name(self, cookie_url):
-        if not cookie_url or cookie_url == '':
-            return None
-
-        if cookie_url in self.cookie_files:
-            return self.cookie_files[cookie_url]
-        else:
-            self.logger.info('Will get cookie for %s' + (cookie_url))
-            cookie_file_name = 'cookies/' + get_random_string()
-            while os.path.exists(cookie_file_name):
-                cookie_file_name = get_random_string()
-
-            args = ['cern-get-sso-cookie', '-u', cookie_url, '-o', cookie_file_name, '--krb']
-            args = ' '.join(args)
-            subprocess.Popen(args, shell=True)
-            sleep_counter = 0
-            sleep_duration = 0.1
-            total_sleep_duration = 60
-            while not os.path.exists(cookie_file_name):
-                time.sleep(sleep_duration)
-                sleep_counter += 1
-                if sleep_counter * sleep_duration > total_sleep_duration:
-                    self.logger.error('Waiting for sso cookie file timeout (%ds). Will continue without cookie.' % (total_sleep_duration))
-                    break
-
-            self.cookie_files[cookie_url] = cookie_file_name
-            return cookie_file_name
-
-    def make_request(self, url, cookie_url):
+    def make_request(self, url, cookie_path):
         self.logger.info('Will make request to %s' % (url))
         try:
-            cookie_file_name = self.get_sso_cookie_file_name(cookie_url)
-            self.logger.info('Cookie file name for %s is "%s"' % (url, cookie_file_name))
             args = ["curl", url, "-s", "-k", "-L", "-m", "60", "-w", "%{http_code}", "-o", "/dev/null"]
-            if cookie_file_name:
-                self.logger.info('Append cookie "%s" while making request to %s' % (cookie_file_name, url))
-                args += ["--cookie", cookie_file_name]
+            if cookie_path:
+                self.logger.info('Append cookie "%s" while making request to %s' % (cookie_path, url))
+                args += ["--cookie", cookie_path]
 
             args = ' '.join(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
@@ -59,8 +26,8 @@ class UpdateStatus(Resource):
             code = int(code)
 
             args = ["curl", url, "-s", "-k", "-L", "-m", "60"]
-            if cookie_file_name:
-                args += ["--cookie", cookie_file_name]
+            if cookie_path:
+                args += ["--cookie", cookie_path]
 
             args = ' '.join(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
@@ -93,19 +60,12 @@ class UpdateStatus(Resource):
             if target_name is not None and target['target_id'] != target_name:
                 continue
 
-            code, output_title = self.make_request(target['url'], target.get('sso_cookie_url'))
+            code, output_title = self.make_request(target['url'], target.get('cookie_path'))
             target['code'] = code
             target['output_title'] = output_title
             self.logger.info('Code for "%s" (%s) is %d' % (target['name'], target['url'], target['code']))
             db.add_entry_for_target(target)
             updated_targets.append(target)
-
-        for cookie_url in self.cookie_files:
-            try:
-                os.remove(self.cookie_files[cookie_url])
-                self.logger.info('Deleted "%s" for %s' % (self.cookie_files.get(cookie_url), cookie_url))
-            except OSError as ex:
-                self.logger.error('Error deleting cookie file "%s" for "%s". Exception %s' % (self.cookie_files.get(cookie_url), cookie_url, ex))
 
         self.parse_statuses(updated_targets)
         return updated_targets

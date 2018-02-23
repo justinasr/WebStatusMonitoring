@@ -3,54 +3,50 @@
         "name": "McM Production website",
         "url": "https://cms-pdmv.cern.ch/mcm/",
         "target_id": "mcm-prod-web",
-        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+        "cookie_path": "/home/WebStatusMonitoring/cookies/prod-cookie"
     },
     {
         "name": "McM Production couchDB",
         "url": "http://vocms090:5984/",
-        "target_id": "mcm-prod-couchdb",
-        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+        "target_id": "mcm-prod-couchdb"
     },
     {
         "name": "pMp Production website",
         "url": "http://cms-pdmv.cern.ch/pmp/",
         "target_id": "pmp-prod-web",
-        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+        "cookie_path": "/home/WebStatusMonitoring/cookies/prod-cookie"
     },
     {
         "name": "Stats website",
         "url": "http://cms-pdmv.cern.ch/stats/",
         "target_id": "stats-web",
-        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+        "cookie_path": "/home/WebStatusMonitoring/cookies/prod-cookie"
     },
     {
         "name": "Stats couchDB",
         "url": "http://vocms084:5984",
-        "target_id": "stats-couchdb",
-        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+        "target_id": "stats-couchdb"
     },
     {
         "name": "Stats couchdb-lucene",
         "url": "http://vocms084:5984/_fti/",
-        "target_id": "stats-couchdb-lucene",
-        "sso_cookie_url": "https://cms-pdmv.cern.ch/mcm/"
+        "target_id": "stats-couchdb-lucene"
     },
     {
         "name": "McM Development website",
         "url": "http://cms-pdmv-dev.cern.ch/mcm/",
         "target_id": "mcm-dev-web",
-        "sso_cookie_url": "https://cms-pdmv-dev.cern.ch/mcm/"
+        "cookie_path": "/home/WebStatusMonitoring/cookies/dev-cookie"
     },
     {
         "name": "McM Development couchDB",
         "url": "http://vocms085:5984/",
-        "target_id": "mcm-dev-couchdb",
-        "sso_cookie_url": "https://cms-pdmv-dev.cern.ch/mcm/"
+        "target_id": "mcm-dev-couchdb"
     },
     {
         "name": "pMp Development website",
         "url": "http://cms-pdmv-dev.cern.ch/pmp/",
         "target_id": "pmp-dev-web",
-        "sso_cookie_url": "https://cms-pdmv-dev.cern.ch/mcm/"
+        "cookie_path": "/home/WebStatusMonitoring/cookies/dev-cookie"
     }
 ]
