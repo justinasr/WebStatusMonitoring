@@ -5,6 +5,7 @@ from update_status import UpdateStatus
 import platform
 import logging
 from logging import handlers
+from utils import read_config
 
 app = Flask(__name__)
 api = Api(app)
@@ -13,13 +14,15 @@ api.add_resource(Logs, '/get_logs', '/get_logs/<int:limit>', '/get_logs/<string:
 api.add_resource(Status, '/get_status')
 api.add_resource(UpdateStatus, '/update_status', '/update_status/', '/update_status/<string:target_name>')
 
+DEBUG_MODE = True
+
 
 @app.route('/')
 def index(name=None):
     targets = Status().get()
     all_logs = Logs().get()
     version = str(platform.python_version())
-    return render_template('index.html', targets=targets, all_logs=all_logs, version=version)
+    return render_template('index.html', targets=targets, all_logs=all_logs, version=version, debug=DEBUG_MODE)
 
 
 def setup_logging():
@@ -39,7 +42,9 @@ def run_flask():
     setup_logging()
     logger = logging.getLogger('logger')
     logger.info('Starting app...')
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    config = read_config()
+    DEBUG_MODE = config.getboolean('debug-mode', True)
+    app.run(host='0.0.0.0', port=config.getint('port', 5000), debug=DEBUG_MODE)
 
 
 if __name__ == '__main__':

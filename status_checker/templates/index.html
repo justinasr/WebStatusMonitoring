@@ -45,7 +45,11 @@
         </style>
     </head>
     <body>
-        <h1 class="text-center">Is stuff ok?</h1>
+        <h1 class="text-center">Is stuff ok?
+        {% if debug %}
+        <span style='color: red;'>Debug Mode</span>
+        {% endif %}
+        </h1>
         <h5 class="text-center">WebStatusMonitoring</h5>
         <h6 class="text-center">Running on Python {{ version }}</h6>
         <div class="container">

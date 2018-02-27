@@ -1,8 +1,9 @@
 import subprocess
 import string
 import random
+import configparser
+import re
 
-RECIPIENT = 'justinas.rumsevicius@cern.ch'
 SIGNATURE = '\n\nSincerely,\nStatus checker at '
 
 
@@ -23,11 +24,24 @@ def get_hostname():
     return proc.communicate()[0].decode('utf-8')
 
 
-def notify(subject, text, recipient=RECIPIENT):
+def notify(subject, text):
     text += SIGNATURE + get_hostname()
     p1 = subprocess.Popen(['echo', text], stdout=subprocess.PIPE)
-    subprocess.Popen(['mail', '-s', subject, recipient], stdin=p1.stdout, stdout=subprocess.PIPE)
+    config = read_config()
+    if 'email-recipients' in config:
+        recipients = re.split(", ", config.get('email-recipients', ''))
+        for recipient in recipients:
+            subprocess.Popen(['mail', '-s', subject, recipient], stdin=p1.stdout, stdout=subprocess.PIPE)
 
 
 def get_random_string(length=10):
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
+
+
+def read_config():
+    config = configparser.ConfigParser()
+    config.read('config.cfg')
+    if 'DEFAULT' in config:
+        return config['DEFAULT']
+    else:
+        return None
