@@ -43,6 +43,7 @@ def run_flask():
     logger = logging.getLogger('logger')
     logger.info('Starting app...')
     config = read_config()
+    global DEBUG_MODE
     DEBUG_MODE = config.getboolean('debug-mode', True)
     app.run(host='0.0.0.0', port=config.getint('port', 5000), debug=DEBUG_MODE)
 
