@@ -7,7 +7,7 @@ status_checker/__pycache__/
 *.db
 
 # SSO Cookie
-status_checker/cookies/*
+status_checker/cookies/*.cookie
 
 # Logs
 status_checker/logs/*

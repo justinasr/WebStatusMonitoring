@@ -21,7 +21,9 @@ sudo pip install flask_restful
 
 #### Status checking
 
-Status checking is performed in *update_status.py* file. Method performs a simple GET request to given URL. If specified in targets.json, add a cookie file. Response HTTP status code is saved in database along with timestamp and website title. Website title is obtained by parsing the HTML and getting the value between <title> tags. If no title can be found, <no title> value is used. Status checker makes two GET requests - one for the HTTP status code and another for the title.
+Status checking is performed in *update_status.py* file. Method performs a simple GET request to given URL. If specified in targets.json, add a cookie file. Response HTTP status code is saved in database along with timestamp and website title. Website title is obtained by parsing the HTML and getting the value between <title> tags. If no title can be found, <no title> value is used. Status checker makes two GET requests - one for the HTTP status code and another for the title. Responses are saved in local SQLite database.
+
+If any of the status codes are not 200, email is sent with list of targets that return something else than OK.
 
 #### Links
 
@@ -35,3 +37,5 @@ Status checking is performed in *update_status.py* file. Method performs a simpl
 #### Target list file
 
 ...
+
+Everything mentioned above is sufficient for status checking with basic (Jinja template + bootstrap) user interface. Instructions below are for using VueJS for user interface. Note: it still requires python process described above.
