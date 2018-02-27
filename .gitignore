@@ -1,5 +1,5 @@
 # Byte-compiled / optimized / DLL files
-__pycache__/
+status_checker/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -7,10 +7,12 @@ __pycache__/
 *.db
 
 # SSO Cookie
-cookies/*
+status_checker/cookies/*
 
 # Logs
-logs/*
+status_checker/logs/*
 
 # Keytab
 *.keytab
+
+vuejs/

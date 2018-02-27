@@ -3,7 +3,7 @@
         "name": "McM Production website",
         "url": "https://cms-pdmv.cern.ch/mcm/",
         "target_id": "mcm-prod-web",
-        "cookie_path": "/home/WebStatusMonitoring/cookies/prod-cookie"
+        "cookie_path": "prod.cookie"
     },
     {
         "name": "McM Production couchDB",
@@ -14,13 +14,13 @@
         "name": "pMp Production website",
         "url": "http://cms-pdmv.cern.ch/pmp/",
         "target_id": "pmp-prod-web",
-        "cookie_path": "/home/WebStatusMonitoring/cookies/prod-cookie"
+        "cookie_path": "prod.cookie"
     },
     {
         "name": "Stats website",
         "url": "http://cms-pdmv.cern.ch/stats/",
         "target_id": "stats-web",
-        "cookie_path": "/home/WebStatusMonitoring/cookies/prod-cookie"
+        "cookie_path": "prod.cookie"
     },
     {
         "name": "Stats couchDB",
@@ -36,7 +36,7 @@
         "name": "McM Development website",
         "url": "http://cms-pdmv-dev.cern.ch/mcm/",
         "target_id": "mcm-dev-web",
-        "cookie_path": "/home/WebStatusMonitoring/cookies/dev-cookie"
+        "cookie_path": "dev.cookie"
     },
     {
         "name": "McM Development couchDB",
@@ -47,6 +47,6 @@
         "name": "pMp Development website",
         "url": "http://cms-pdmv-dev.cern.ch/pmp/",
         "target_id": "pmp-dev-web",
-        "cookie_path": "/home/WebStatusMonitoring/cookies/dev-cookie"
+        "cookie_path": "dev.cookie"
     }
 ]

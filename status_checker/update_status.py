@@ -17,6 +17,7 @@ class UpdateStatus(Resource):
         try:
             args = ["curl", url, "-s", "-k", "-L", "-m", "60", "-w", "%{http_code}", "-o", "/dev/null"]
             if cookie_path:
+                cookie_path = "cookies/" + cookie_path
                 self.logger.info('Append cookie "%s" while making request to %s' % (cookie_path, url))
                 args += ["--cookie", cookie_path]
 
