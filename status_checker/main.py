@@ -45,7 +45,7 @@ def run_flask():
     config = read_config()
     global DEBUG_MODE
     DEBUG_MODE = config.getboolean('debug-mode', True)
-    app.run(host='0.0.0.0', port=config.getint('port', 5000), debug=DEBUG_MODE)
+    app.run(host='0.0.0.0', port=config.getint('port', 5000), debug=DEBUG_MODE, threaded=True)
 
 
 if __name__ == '__main__':

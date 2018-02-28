@@ -4,8 +4,8 @@
 
 # Init kerberos
 
-this_dir=$(pwd)
-keytab_file_name=$(ls -A1 | grep .keytab | head -n1)
+this_dir=/home/WebStatusMonitoring/status_checker
+keytab_file_name=$(ls -A1 $this_dir | grep .keytab | head -n1)
 
 echo 'Using '$this_dir/$keytab_file_name
 
@@ -23,4 +23,4 @@ cern-get-sso-cookie -u https://cms-pdmv-dev.cern.ch/mcm/ -o $this_dir/cookies/de
 
 # Trigger an update
 
-curl -s 'http://localhost:5000/update_status'
+curl -s 'http://localhost/update_status'
