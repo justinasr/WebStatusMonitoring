@@ -6,6 +6,7 @@ import platform
 import logging
 from logging import handlers
 from utils import read_config
+import json
 
 app = Flask(__name__)
 api = Api(app)
@@ -19,8 +20,8 @@ DEBUG_MODE = True
 
 @app.route('/')
 def index(name=None):
-    targets = Status().get()
-    all_logs = Logs().get()
+    targets = json.loads(Status().get().get_data(as_text=True))
+    all_logs = json.loads(Logs().get().get_data(as_text=True))
     version = str(platform.python_version())
     return render_template('index.html', targets=targets, all_logs=all_logs, version=version, debug=DEBUG_MODE)
 

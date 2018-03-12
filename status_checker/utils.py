@@ -11,7 +11,7 @@ def get_color_for_code(code):
     if code == 200:
         # Green
         return '#87D37C'
-    elif code == -1:
+    elif code == 0:
         # Red
         return '#EC644B'
     else:

@@ -3,6 +3,7 @@ from database import Database
 from utils import get_color_for_code
 import json
 import logging
+import flask
 
 
 class Status(Resource):
@@ -30,7 +31,10 @@ class Status(Resource):
             target['output_title'] = newest_log['output_title']
 
         self.logger.info('Return status for %d objects' % (len(targets)))
-        return targets
+        resp = flask.Response(json.dumps(targets))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
 
 
 class Logs(Resource):
@@ -47,4 +51,7 @@ class Logs(Resource):
             log['color'] = get_color_for_code(log['code'])
 
         self.logger.info('Will return %d log entries' % (len(all_logs)))
-        return all_logs
+        resp = flask.Response(json.dumps(all_logs))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Content-Type'] = 'application/json'
+        return resp

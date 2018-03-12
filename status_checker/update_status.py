@@ -5,6 +5,7 @@ from utils import notify
 import subprocess
 import re
 import logging
+import flask
 
 
 class UpdateStatus(Resource):
@@ -69,7 +70,10 @@ class UpdateStatus(Resource):
             updated_targets.append(target)
 
         self.parse_statuses(updated_targets)
-        return updated_targets
+        resp = flask.Response(json.dumps(updated_targets))
+        resp.headers['Access-Control-Allow-Origin'] = '*'
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
 
     def parse_statuses(self, targets):
         message = ""

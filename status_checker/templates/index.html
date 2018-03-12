@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Status</title>
+        <link rel="shortcut icon" type="image/x-icon" href="https://png.icons8.com/metro/1600/system-info">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
@@ -63,7 +64,7 @@
                         <p class="card-text">
                         {% if entry.code == 200 %}
                             Looks fine.
-                        {% elif entry.code == -1 %}
+                        {% elif entry.code == 0 %}
                             Appears to be dead...
                         {% else %}
                             Returns error code "<b>{{ entry.code }}</b>".
