@@ -1,10 +1,9 @@
 from flask_restful import Resource
 from database import Database
-from utils import get_color_for_code
+from utils import get_color_for_code, read_config
 import json
 import logging
 import flask
-from main import CONFIG
 
 
 class Status(Resource):
@@ -15,7 +14,8 @@ class Status(Resource):
     def get(self):
         self.logger.info('Get status')
         db = Database()
-        targets = json.load(open(CONFIG.get('targets', 'targets.json')))
+        config = read_config()
+        targets = json.load(open(config.get('targets', 'targets.json')))
         for target in targets:
             self.logger.info('Getting status for "%s"' % (target['name']))
             target_logs = db.get_entries(target['target_id'], 1)

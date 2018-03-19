@@ -7,7 +7,6 @@ import logging
 from logging import handlers
 from utils import read_config
 import json
-import sys
 
 app = Flask(__name__)
 api = Api(app)
@@ -24,19 +23,18 @@ api.add_resource(UpdateStatus,
                  '/update_status/',
                  '/update_status/<string:target_name>')
 
-DEBUG_MODE = True
-CONFIG = None
 
 @app.route('/')
 def index(name=None):
     targets = json.loads(Status().get().get_data(as_text=True))
     all_logs = json.loads(Logs().get().get_data(as_text=True))
     version = str(platform.python_version())
+    config = read_config()
     return render_template('index.html',
                            targets=targets,
                            all_logs=all_logs,
                            version=version,
-                           debug=DEBUG_MODE)
+                           debug=config.getboolean('debug-mode', False))
 
 
 def setup_logging():
@@ -64,18 +62,12 @@ def run_flask():
     setup_logging()
     logger = logging.getLogger('logger')
     logger.info('Starting app...')
-    global CONFIG
-    if len(sys.argv) > 1:
-        logger.info('Argument %s' % (sys.argv[1]))
-        CONFIG = read_config(sys.argv[1])
-    else:
-        CONFIG = read_config()
-
-    global DEBUG_MODE
-    DEBUG_MODE = CONFIG.getboolean('debug-mode', False)
+    config = read_config()
+    debug_mode = config.getboolean('debug-mode', False)
+    port = config.getint('port', 80)
     app.run(host='0.0.0.0',
-            port=CONFIG.getint('port', 80),
-            debug=DEBUG_MODE,
+            port=port,
+            debug=debug_mode,
             threaded=True)
 
 

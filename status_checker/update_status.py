@@ -1,12 +1,11 @@
 from flask_restful import Resource
 import json
 from database import Database
-from utils import notify
+from utils import notify, read_config
 import subprocess
 import re
 import logging
 import flask
-from main import CONFIG
 
 
 class UpdateStatus(Resource):
@@ -56,7 +55,8 @@ class UpdateStatus(Resource):
         else:
             self.logger.info('Check status for all targets')
 
-        targets = json.load(open(CONFIG.get('targets', 'targets.json')))
+        config = read_config()
+        targets = json.load(open(config.get('targets', 'targets.json')))
         updated_targets = []
         db = Database()
         for target in targets:
