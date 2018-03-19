@@ -16,3 +16,7 @@ status_checker/logs/*
 *.keytab
 
 vuejs/
+
+# vue
+vue_wsm/build
+vue_wsm/node_modules

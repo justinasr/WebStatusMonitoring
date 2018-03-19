@@ -7,23 +7,36 @@ import logging
 from logging import handlers
 from utils import read_config
 import json
+import sys
 
 app = Flask(__name__)
 api = Api(app)
 
-api.add_resource(Logs, '/get_logs', '/get_logs/<int:limit>', '/get_logs/<string:target_name>', '/get_logs/<string:target_name>/<int:limit>')
-api.add_resource(Status, '/get_status')
-api.add_resource(UpdateStatus, '/update_status', '/update_status/', '/update_status/<string:target_name>')
+api.add_resource(Logs,
+                 '/get_logs',
+                 '/get_logs/<int:limit>',
+                 '/get_logs/<string:target_name>',
+                 '/get_logs/<string:target_name>/<int:limit>')
+api.add_resource(Status,
+                 '/get_status')
+api.add_resource(UpdateStatus,
+                 '/update_status',
+                 '/update_status/',
+                 '/update_status/<string:target_name>')
 
 DEBUG_MODE = True
-
+CONFIG = None
 
 @app.route('/')
 def index(name=None):
     targets = json.loads(Status().get().get_data(as_text=True))
     all_logs = json.loads(Logs().get().get_data(as_text=True))
     version = str(platform.python_version())
-    return render_template('index.html', targets=targets, all_logs=all_logs, version=version, debug=DEBUG_MODE)
+    return render_template('index.html',
+                           targets=targets,
+                           all_logs=all_logs,
+                           version=version,
+                           debug=DEBUG_MODE)
 
 
 def setup_logging():
@@ -33,8 +46,16 @@ def setup_logging():
     log_file_name = 'logs/logs.log'
     logger = logging.getLogger('logger')
     logger.setLevel(logging.INFO)
-    handler = handlers.RotatingFileHandler(log_file_name, 'a', max_log_file_size, max_log_file_count)
-    formatter = logging.Formatter(fmt='[%(asctime)s][%(filename)s->%(funcName)s:%(lineno)d][%(levelname)s] %(message)s', datefmt='%d/%b/%Y:%H:%M:%S')
+    handler = handlers.RotatingFileHandler(log_file_name,
+                                           'a',
+                                           max_log_file_size,
+                                           max_log_file_count)
+    formatter = logging.Formatter(fmt='[%(asctime)s]\
+                                       [%(filename)s->\
+                                       %(funcName)s:\
+                                       %(lineno)d]\
+                                       [%(levelname)s] %(message)s',
+                                  datefmt='%d/%b/%Y:%H:%M:%S')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
 
@@ -43,10 +64,19 @@ def run_flask():
     setup_logging()
     logger = logging.getLogger('logger')
     logger.info('Starting app...')
-    config = read_config()
+    global CONFIG
+    if len(sys.argv) > 1:
+        logger.info('Argument %s' % (sys.argv[1]))
+        CONFIG = read_config(sys.argv[1])
+    else:
+        CONFIG = read_config()
+
     global DEBUG_MODE
-    DEBUG_MODE = config.getboolean('debug-mode', True)
-    app.run(host='0.0.0.0', port=config.getint('port', 5000), debug=DEBUG_MODE, threaded=True)
+    DEBUG_MODE = CONFIG.getboolean('debug-mode', False)
+    app.run(host='0.0.0.0',
+            port=CONFIG.getint('port', 80),
+            debug=DEBUG_MODE,
+            threaded=True)
 
 
 if __name__ == '__main__':

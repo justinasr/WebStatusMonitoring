@@ -31,17 +31,24 @@ def notify(subject, text):
     if 'email-recipients' in config:
         recipients = re.split(", ", config.get('email-recipients', ''))
         for recipient in recipients:
-            subprocess.Popen(['mail', '-s', subject, recipient], stdin=p1.stdout, stdout=subprocess.PIPE)
+            subprocess.Popen(['mail',
+                              '-s',
+                              subject,
+                              recipient],
+                             stdin=p1.stdout,
+                             stdout=subprocess.PIPE)
 
 
 def get_random_string(length=10):
-    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(length))
+    return ''.join(random.choice(string.ascii_uppercase +
+                                 string.digits) for _ in range(length))
 
 
-def read_config():
+def read_config(name='DEFAULT'):
+    name = name.upper()
     config = configparser.ConfigParser()
     config.read('config.cfg')
-    if 'DEFAULT' in config:
-        return config['DEFAULT']
+    if name in config:
+        return config[name]
     else:
         return None

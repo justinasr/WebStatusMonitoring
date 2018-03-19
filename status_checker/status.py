@@ -4,6 +4,7 @@ from utils import get_color_for_code
 import json
 import logging
 import flask
+from main import CONFIG
 
 
 class Status(Resource):
@@ -14,7 +15,7 @@ class Status(Resource):
     def get(self):
         self.logger.info('Get status')
         db = Database()
-        targets = json.load(open('targets.json'))
+        targets = json.load(open(CONFIG.get('targets', 'targets.json')))
         for target in targets:
             self.logger.info('Getting status for "%s"' % (target['name']))
             target_logs = db.get_entries(target['target_id'], 1)

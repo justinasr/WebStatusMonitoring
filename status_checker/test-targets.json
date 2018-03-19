@@ -1,0 +1,24 @@
+[
+    {
+        "name": "McM Production website",
+        "url": "https://cms-pdmv.cern.ch/mcm/",
+        "target_id": "mcm-prod-web",
+        "cookie_path": "prod.cookie"
+    },
+    {
+        "name": "McM Production couchDB",
+        "url": "http://vocms090:5984/",
+        "target_id": "mcm-prod-couchdb"
+    },
+    {
+        "name": "Web 418",
+        "url": "http://httpstat.us/418",
+        "target_id": "web418"
+    },
+    {
+        "name": "Dead website",
+        "url": "http://",
+        "target_id": "dead"
+    }
+
+]
