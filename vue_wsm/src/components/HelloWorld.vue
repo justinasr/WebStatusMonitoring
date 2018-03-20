@@ -3,10 +3,10 @@
     <h1>Is stuff ok?</h1>
     <v-container grid-list-md>
       <v-layout row wrap>
-        <v-flex lg3 md4 sm6 xs12 v-for="entry in entries" :key="entry.target_id">
+        <v-flex lg2 md4 sm6 xs12 v-for="entry in entries" :key="entry.target_id">
           <v-card v-bind:class="{ fadeAnimation : entry.refreshed }" text-xs-center :color="entry.code | codeToColor">
             <v-card-text class="title"><b>{{ entry.name }}</b></v-card-text>
-            <v-card-text class="px-0">
+            <v-card-text>
               <p>Status: {{ entry.code | codeToText }}</p>
               <p>Last check: {{ entry.checked }}</p>
             </v-card-text>
@@ -41,7 +41,7 @@
                   <v-list-tile-content>
                     <v-list-tile-title><div class="status-code" :class="item.code | codeToColor ">{{ item.code }}</div> {{ item.name }}</v-list-tile-title>
                     <v-list-tile-sub-title>Title: {{ item.output_title }}</v-list-tile-sub-title>
-                    <v-list-tile-sub-title>{{ item.date }} <a :href="item.url">{{ item.url }}</a></v-list-tile-sub-title>
+                    <v-list-tile-sub-title>{{ item.date }} <a :href="item.url">Link</a></v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-divider v-if="index + 1 < items.length" :key="index"></v-divider>
@@ -73,7 +73,7 @@ export default {
   data () {
     return {
       statusServiceUrl: 'http://instance4:5000',
-      refreshInterval: 15000,
+      refreshInterval: 30000,
       entries: [],
       items: [],
       logsDialog: false,
@@ -179,13 +179,13 @@ export default {
 
 .card {
   height: 100% !important;
-  padding-bottom: 56px !important;
+  padding-bottom: 64px !important;
 }
 
 .card__actions {
   width: 100% !important;
   position: absolute !important;
-  bottom: 0 !important;
+  bottom: 8px !important;
 }
 
 .card__text p {
