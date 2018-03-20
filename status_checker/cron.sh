@@ -4,7 +4,7 @@
 
 # Init kerberos
 
-this_dir=$(cd 'dirname $0' && pwd)
+this_dir=$(cd $(dirname $0) && pwd)
 keytab_file_name=$(ls -A1 $this_dir | grep .keytab | head -n1)
 
 echo 'Using '$this_dir/$keytab_file_name
