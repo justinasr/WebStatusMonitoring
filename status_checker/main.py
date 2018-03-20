@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 from flask_restful import Api
 from status import Status, Logs
 from update_status import UpdateStatus
@@ -28,13 +28,21 @@ api.add_resource(UpdateStatus,
 def index(name=None):
     targets = json.loads(Status().get().get_data(as_text=True))
     all_logs = json.loads(Logs().get().get_data(as_text=True))
-    version = str(platform.python_version())
+    version = python_version()
     config = read_config()
     return render_template('index.html',
                            targets=targets,
                            all_logs=all_logs,
                            version=version,
                            debug=config.getboolean('debug-mode', False))
+
+
+@app.route('/python_version')
+def python_version():
+    version = str(platform.python_version())
+    resp = Response(version)
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 
 def setup_logging():

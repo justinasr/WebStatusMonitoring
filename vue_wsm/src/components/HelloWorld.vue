@@ -1,9 +1,11 @@
 <template>
   <v-app>
     <h1>Is stuff ok?</h1>
+    <h3>WebStatusMonitoring</h3>
+    <h4>Running on Python {{ pythonVersion }}</h4>
     <v-container grid-list-md>
       <v-layout row wrap>
-        <v-flex lg2 md4 sm6 xs12 v-for="entry in entries" :key="entry.target_id">
+        <v-flex lg3 md4 sm6 xs12 v-for="entry in entries" :key="entry.target_id">
           <v-card v-bind:class="{ fadeAnimation : entry.refreshed }" text-xs-center :color="entry.code | codeToColor">
             <v-card-text class="title"><b>{{ entry.name }}</b></v-card-text>
             <v-card-text>
@@ -50,7 +52,7 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn dark fab small class="blue-button margin-auto" @click.stop="logsDialog=false"><v-icon>thumb_up</v-icon></v-btn>
+            <v-btn dark fab small class="blue-button margin-auto" @click.stop="logsDialog=false"><v-icon>check</v-icon></v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -78,15 +80,14 @@ export default {
       items: [],
       logsDialog: false,
       logsDialogTitle: '',
-      timer: null
+      timer: null,
+      pythonVersion: '-'
     }
   },
   created () {
     this.fetchStatus()
-    this.timer = setInterval(function() {
-        this.fetchStatus('')
-    }.bind(this), this.refreshInterval);
-    
+    this.startAutoRefresh()
+    this.getPythonVersion()
   },
   filters: {
     codeToColor (code) {
@@ -109,6 +110,11 @@ export default {
     }
   },
   methods: {
+    startAutoRefresh: function () {
+      this.timer = setInterval(function() {
+        this.fetchStatus('')
+      }.bind(this), this.refreshInterval);
+    },
     fetchStatus: function (targetId) {
       this.entries.forEach(function (value) {
         value.refreshed = false
@@ -125,8 +131,10 @@ export default {
       })
     },
     updateStatus: function (targetId) {
+      clearInterval(this.timer)
       this.$http.get(this.statusServiceUrl + '/update_status' + (targetId != '' ? '/' + targetId : '')).then(response => {
         this.fetchStatus(targetId)
+        this.startAutoRefresh()
       }, response => {
       })
     },
@@ -145,12 +153,22 @@ export default {
         }
       }, response => {
       })
-    }
+    },
+    getPythonVersion: function (targetId) {
+      this.$http.get(this.statusServiceUrl + '/python_version').then(response => {
+        this.pythonVersion = response.bodyText
+      }, response => {
+      })
+    },
   }
 }
 </script>
 
 <style>
+h1 {
+  font-size: 3rem;
+}
+
 .status-green {
   background-color: #87D37C !important;
 }

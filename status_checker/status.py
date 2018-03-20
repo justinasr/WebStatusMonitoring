@@ -22,13 +22,14 @@ class Status(Resource):
             if len(target_logs) == 0:
                 target['code'] = -1
                 target['checked'] = ''
-                target['color'] = ''
                 continue
 
             newest_log = target_logs[0]
             target['code'] = newest_log['code']
             target['checked'] = newest_log['date'][:19]
             target['output_title'] = newest_log['output_title']
+            if 'cookie_path' in target:
+                del target['cookie_path']
 
         self.logger.info('Return status for %d objects' % (len(targets)))
         resp = flask.Response(json.dumps(targets))
