@@ -28,7 +28,7 @@ api.add_resource(UpdateStatus,
 def index(name=None):
     targets = json.loads(Status().get().get_data(as_text=True))
     all_logs = json.loads(Logs().get().get_data(as_text=True))
-    version = python_version()
+    version = python_version().get_data(as_text=True)
     config = read_config()
     return render_template('index.html',
                            targets=targets,
