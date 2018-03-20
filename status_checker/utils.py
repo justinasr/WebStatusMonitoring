@@ -6,6 +6,7 @@ import re
 import sys
 
 SIGNATURE = '\n\nSincerely,\nStatus checker at '
+CONFIG = None
 
 
 def get_hostname():
@@ -33,6 +34,10 @@ def get_random_string(length=10):
 
 
 def read_config():
+    global CONFIG
+    if CONFIG is not None:
+        return CONFIG
+
     if len(sys.argv) > 1:
         name = sys.argv[1].upper()
     else:
@@ -41,6 +46,7 @@ def read_config():
     config = configparser.ConfigParser()
     config.read('config.cfg')
     if name in config:
-        return config[name]
+        CONFIG = config[name]
+        return CONFIG
     else:
         return None

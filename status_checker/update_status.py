@@ -6,6 +6,7 @@ import subprocess
 import re
 import logging
 import flask
+import datetime
 
 
 class UpdateStatus(Resource):
@@ -57,11 +58,20 @@ class UpdateStatus(Resource):
 
         config = read_config()
         targets = json.load(open(config.get('targets', 'targets.json')))
+        min_refresh_interval = config.getint('min-refresh-interval', 60)
         updated_targets = []
         db = Database()
         for target in targets:
             if target_name is not None and target['target_id'] != target_name:
                 continue
+
+            newest_entries = db.get_entries(target['target_id'], 1)
+            if len(newest_entries) > 0:
+                now = datetime.datetime.now()
+                entry_date = datetime.datetime.strptime(newest_entries[0]['date'][:19], '%Y-%m-%d %H:%M:%S')
+                delta = now - entry_date
+                if delta.total_seconds() < min_refresh_interval:
+                    continue
 
             code, output_title = self.make_request(target['url'], target.get('cookie_path'))
             target['code'] = code

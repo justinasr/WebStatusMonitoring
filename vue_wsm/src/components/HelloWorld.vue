@@ -75,7 +75,7 @@ export default {
   data () {
     return {
       statusServiceUrl: 'http://instance4:5000',
-      refreshInterval: 30000,
+      refreshInterval: 60000,
       entries: [],
       items: [],
       logsDialog: false,
