@@ -4,8 +4,8 @@
     <v-container grid-list-md>
       <v-layout row wrap>
         <v-flex lg3 md4 sm6 xs12 v-for="entry in entries" :key="entry.target_id">
-          <v-card text-xs-center :color="entry.code | codeToColor ">
-            <v-card-text class="title">{{ entry.name }}</v-card-text>
+          <v-card v-bind:class="{ fadeAnimation : entry.refreshed }" text-xs-center :color="entry.code | codeToColor">
+            <v-card-text class="title"><b>{{ entry.name }}</b></v-card-text>
             <v-card-text class="px-0">
               <p>Status: {{ entry.code | codeToText }}</p>
               <p>Last check: {{ entry.checked }}</p>
@@ -17,11 +17,11 @@
                   <span>Open {{ entry.name }}</span>
                 </v-tooltip>
                 <v-tooltip bottom>
-                  <v-btn slot="activator" dark fab small class="blue-button" v-on:click="updeitas2(entry.target_id)"><v-icon>refresh</v-icon></v-btn>
+                  <v-btn slot="activator" dark fab small class="blue-button" v-on:click="updateStatus(entry.target_id)"><v-icon>refresh</v-icon></v-btn>
                   <span>Check status of {{ entry.name }}</span>
                 </v-tooltip>
                 <v-tooltip bottom>
-                  <v-btn slot="activator" dark fab small class="blue-button" @click.stop="logai2(entry.target_id)"><v-icon>assignment</v-icon></v-btn>
+                  <v-btn slot="activator" dark fab small class="blue-button" @click.stop="fetchLogs(entry.target_id)"><v-icon>assignment</v-icon></v-btn>
                   <span>Show logs of {{ entry.name }}</span>
                 </v-tooltip>
               </div>
@@ -30,9 +30,9 @@
         </v-flex>
       </v-layout>
 
-      <v-dialog scrollable v-model="dialog3" max-width="400px">
+      <v-dialog scrollable v-model="logsDialog" max-width="400px">
         <v-card>
-          <v-card-title class="title">{{ this.dialog3Title }}</v-card-title>
+          <v-card-title class="title">{{ this.logsDialogTitle }}</v-card-title>
           <v-divider></v-divider>
           <v-card-text>
             <v-list three-line>
@@ -50,17 +50,17 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn dark fab small class="blue-button margin-auto" @click.stop="dialog3=false"><v-icon>thumb_up</v-icon></v-btn>
+            <v-btn dark fab small class="blue-button margin-auto" @click.stop="logsDialog=false"><v-icon>thumb_up</v-icon></v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
       <v-tooltip bottom>
-        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="updeitas"><v-icon>refresh</v-icon></v-btn>
+        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="updateStatus('')"><v-icon>refresh</v-icon></v-btn>
         <span>Check status of all services</span>
       </v-tooltip>
       <v-tooltip bottom>
-        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="logai"><v-icon>assignment</v-icon></v-btn>
+        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="fetchLogs('')"><v-icon>assignment</v-icon></v-btn>
         <span>Show all logs</span>
       </v-tooltip>
     </v-container>
@@ -72,18 +72,20 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      statusServiceUrl: 'http://instance4:5000',
+      refreshInterval: 15000,
       entries: [],
       items: [],
-      dialog3: false,
-      dialog3Title: ''
+      logsDialog: false,
+      logsDialogTitle: '',
+      timer: null
     }
   },
   created () {
-    this.fetchas()
-    setInterval(function() {
-        this.fetchas()
-    }.bind(this), 15000);
+    this.fetchStatus()
+    this.timer = setInterval(function() {
+        this.fetchStatus('')
+    }.bind(this), this.refreshInterval);
     
   },
   filters: {
@@ -107,42 +109,40 @@ export default {
     }
   },
   methods: {
-    fetchas: function () {
-      this.$http.get('http://instance4:5000/get_status').then(response => {
-        this.entries = JSON.parse(response.bodyText)
-        console.log('fetchas')
-      }, response => {
-      })
-    },
-    updeitas2: function (target_id) {
-      this.$http.get('http://instance4:5000/update_status/' + target_id).then(response => {
-        this.fetchas()
-      }, response => {
-      })
-    },
-    updeitas: function () {
-      this.$http.get('http://instance4:5000/update_status').then(response => {
-        this.fetchas()
-      }, response => {
-      })
-    },
-    logai: function () {
-      this.$http.get('http://instance4:5000/get_logs').then(response => {
-        this.items = JSON.parse(response.bodyText)
-        this.dialog3 = true
-        this.dialog3Title = 'All logs'
-      }, response => {
-      })
-    },
-    logai2: function (target_id) {
-      this.$http.get('http://instance4:5000/get_logs/' + target_id).then(response => {
-        this.dialog3 = true
-        this.items = JSON.parse(response.bodyText)
-        this.entries.forEach(function (value) {
-          if (value.target_id == target_id) {
-            this.dialog3Title = value.name + ' logs'
+    fetchStatus: function (targetId) {
+      this.entries.forEach(function (value) {
+        value.refreshed = false
+      }.bind(this))
+      this.$http.get(this.statusServiceUrl + '/get_status').then(response => {
+        var parsedEntries = JSON.parse(response.bodyText)
+        parsedEntries.forEach(function (value) {
+          if (targetId == '' || value.target_id == targetId) {
+            value.refreshed = true
           }
         }.bind(this))
+        this.entries = parsedEntries
+      }, response => {
+      })
+    },
+    updateStatus: function (targetId) {
+      this.$http.get(this.statusServiceUrl + '/update_status' + (targetId != '' ? '/' + targetId : '')).then(response => {
+        this.fetchStatus(targetId)
+      }, response => {
+      })
+    },
+    fetchLogs: function (targetId) {
+      this.$http.get(this.statusServiceUrl + '/get_logs' + (targetId != '' ? '/' + targetId : '')).then(response => {
+        this.items = JSON.parse(response.bodyText)
+        this.logsDialog = true
+        if (targetId == '') {
+          this.logsDialogTitle = 'All logs'
+        } else {
+          if (this.items.length > 0) {
+            this.logsDialogTitle = this.items[0].name + ' logs'
+          } else {
+            this.logsDialogTitle = 'No logs'
+          }
+        }
       }, response => {
       })
     }
@@ -175,6 +175,58 @@ export default {
   display: inline-block;
   width: 40px;
   text-align: center;
+}
+
+.card {
+  height: 100% !important;
+  padding-bottom: 56px !important;
+}
+
+.card__actions {
+  width: 100% !important;
+  position: absolute !important;
+  bottom: 0 !important;
+}
+
+.card__text p {
+  margin-bottom: 2px !important;
+}
+
+.fadeAnimation {
+  -webkit-animation: fadein 1.5s; /* Safari, Chrome and Opera > 12.1 */
+     -moz-animation: fadein 1.5s; /* Firefox < 16 */
+      -ms-animation: fadein 1.5s; /* Internet Explorer */
+       -o-animation: fadein 1.5s; /* Opera < 12.1 */
+          animation: fadein 1.5s;
+}
+
+@keyframes fadein {
+    from { opacity: 0.4; }
+    to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+    from { opacity: 0.4; }
+    to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+    from { opacity: 0.4; }
+    to   { opacity: 1; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+    from { opacity: 0.4; }
+    to   { opacity: 1; }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes fadein {
+    from { opacity: 0.4; }
+    to   { opacity: 1; }
 }
 
 </style>
