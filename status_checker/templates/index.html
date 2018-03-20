@@ -58,7 +58,13 @@
                 {% if loop.index0 % 4 == 0 %}
                 <div class="card-deck mt-2">
                 {% endif %}
-                <div style="background-color:{{ entry.color }};" class="card text-center">
+                {% if entry.code == 200 %}
+                    <div style="background-color:#87D37C;" class="card text-center">
+                {% elif entry.code == 0 %}
+                    <div style="background-color:#EC644B;" class="card text-center">
+                {% else %}
+                    <div style="background-color:#F5D76E;" class="card text-center">
+                {% endif %}
                     <div style="padding: 5px;" class="card-block">
                         <h4 class="card-title">{{ entry.name }}</h4>
                         <p class="card-text">
@@ -106,7 +112,13 @@
                     <tbody>
                         {% for entry in all_logs %}
                             <tr>
-                                <td style="padding:0; margin:0; width:1px; background-color:{{ entry.color }};"></td>
+                                {% if entry.code == 200 %}
+                                    <td style="padding:0; margin:0; width:1px; background-color:#87D37C;"></td>
+                                {% elif entry.code == 0 %}
+                                    <td style="padding:0; margin:0; width:1px; background-color:#EC644B;"></td>
+                                {% else %}
+                                    <td style="padding:0; margin:0; width:1px; background-color:#F5D76E;"></td>
+                                {% endif %}
                                 <td>{{ entry.date }}</td>
                                 <td>{{ entry.name }}</td>
                                 <td>{{ entry.code }}</td>

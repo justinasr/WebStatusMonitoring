@@ -8,18 +8,6 @@ import sys
 SIGNATURE = '\n\nSincerely,\nStatus checker at '
 
 
-def get_color_for_code(code):
-    if code == 200:
-        # Green
-        return '#87D37C'
-    elif code == 0:
-        # Red
-        return '#EC644B'
-    else:
-        # Yellow
-        return '#F5D76E'
-
-
 def get_hostname():
     proc = subprocess.Popen(['hostname'], stdout=subprocess.PIPE)
     return proc.communicate()[0].decode('utf-8')
