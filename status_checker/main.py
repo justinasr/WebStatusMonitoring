@@ -8,7 +8,9 @@ from logging import handlers
 from utils import read_config
 import json
 
-app = Flask(__name__)
+app = Flask(__name__,
+            static_folder="./templates/static",
+            template_folder="./templates")
 api = Api(app)
 
 api.add_resource(Logs,
@@ -26,11 +28,16 @@ api.add_resource(UpdateStatus,
 
 @app.route('/')
 def index(name=None):
+    return render_template('index.html')
+
+
+@app.route('/simple')
+def index_simple(name=None):
     targets = json.loads(Status().get().get_data(as_text=True))
     all_logs = json.loads(Logs().get().get_data(as_text=True))
     version = python_version().get_data(as_text=True)
     config = read_config()
-    return render_template('index.html',
+    return render_template('index_simple.html',
                            targets=targets,
                            all_logs=all_logs,
                            version=version,

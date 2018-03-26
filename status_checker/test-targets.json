@@ -19,6 +19,12 @@
         "name": "Dead website",
         "url": "http://",
         "target_id": "dead"
+    },
+    {
+        "name": "Stats2 DEV website",
+        "url": "http://cms-pdmv-dev.cern.ch/stats/",
+        "target_id": "stats2-dev-web",
+        "cookie_path": "dev.cookie"
     }
 
 ]

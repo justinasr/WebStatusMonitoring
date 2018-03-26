@@ -74,7 +74,7 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      statusServiceUrl: 'http://instance4:5000',
+      statusServiceUrl: location.protocol + '//' + location.hostname,
       refreshInterval: 60000,
       entries: [],
       items: [],
