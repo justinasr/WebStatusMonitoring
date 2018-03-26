@@ -10,7 +10,7 @@
             <v-card-text class="title"><b>{{ entry.name }}</b></v-card-text>
             <v-card-text>
               <p>Status: {{ entry.code | codeToText }}</p>
-              <p>Last check: {{ entry.checked }}</p>
+              <p v-if="entry.code != -1">Last check: {{ entry.checked }}</p>
             </v-card-text>
             <v-card-actions>
               <div class="margin-auto">
@@ -95,6 +95,8 @@ export default {
         return "status-green"
       } else if (code == 0) {
         return "status-red"
+      } else if (code == -1) {
+        return "status-gray"
       } else {
         return "status-orange"
       }
@@ -104,6 +106,8 @@ export default {
         return "Looks good!"
       } else if (code == 0) {
         return "Appears to be dead..."
+      } else if (code == -1) {
+        return "Hasn't been checked yet."
       } else {
         return "Is broken. Returns " + code
       }
@@ -179,6 +183,10 @@ h1 {
 
 .status-red {
   background-color: #EC644B !important;
+}
+
+.status-gray {
+  background-color: #DDDDDD !important;
 }
 
 .blue-button {

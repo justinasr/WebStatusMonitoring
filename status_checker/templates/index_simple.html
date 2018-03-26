@@ -62,6 +62,8 @@
                     <div style="background-color:#87D37C;" class="card text-center">
                 {% elif entry.code == 0 %}
                     <div style="background-color:#EC644B;" class="card text-center">
+                {% elif entry.code == -1 %}
+                    <div style="background-color:#DDDDDD;" class="card text-center">
                 {% else %}
                     <div style="background-color:#F5D76E;" class="card text-center">
                 {% endif %}
@@ -72,11 +74,15 @@
                             Looks fine.
                         {% elif entry.code == 0 %}
                             Appears to be dead...
+                        {% elif entry.code == -1 %}
+                            Hasn't been checked yet.
                         {% else %}
                             Returns error code "<b>{{ entry.code }}</b>".
                         {% endif %}
                         <br>
+                        {% if entry.code != -1 %}
                         Checked: {{ entry.checked }}
+                        {% endif %}
                         </p>
                     </div>
                     <div class="card-footer">
