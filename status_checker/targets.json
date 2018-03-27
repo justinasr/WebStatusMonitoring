@@ -51,7 +51,7 @@
     },
     {
         "name": "Stats2 DEV website",
-        "url": "http://cms-pdmv-dev.cern.ch/stats/",
+        "url": "http://cms-pdmv-dev.cern.ch/stats2/",
         "target_id": "stats2-dev-web",
         "cookie_path": "dev.cookie"
     }
