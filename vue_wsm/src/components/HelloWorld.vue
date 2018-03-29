@@ -1,29 +1,32 @@
 <template>
   <v-app>
-    <h1>Is stuff ok?</h1>
+    <h1>Are shadows ok?</h1>
     <h3>WebStatusMonitoring</h3>
     <h4>Running on Python {{ pythonVersion }}</h4>
     <v-container grid-list-md>
-      <v-layout row wrap>
-        <v-flex lg3 md4 sm6 xs12 v-for="entry in entries" :key="entry.target_id">
-          <v-card v-bind:class="{ fadeAnimation : entry.refreshed }" text-xs-center :color="entry.code | codeToColor">
+      <v-layout row wrap class="kortos">
+        <v-flex lg3 md4 sm6 xs12 v-for="(entry, index) in entries" :key="entry.target_id">
+          <v-card v-bind:class="'elevation-10 ' + (entry.disabled ? 'disabled':'enabled')" text-xs-center :color="entry.code | codeToColor">
             <v-card-text class="title"><b>{{ entry.name }}</b></v-card-text>
-            <v-card-text>
+            <v-card-text v-if="!entry.disabled">
               <p>Status: {{ entry.code | codeToText }}</p>
               <p v-if="entry.code != -1">Last check: {{ entry.checked }}</p>
+            </v-card-text>
+            <v-card-text v-if="entry.disabled">
+              <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </v-card-text>
             <v-card-actions>
               <div class="margin-auto">
                 <v-tooltip bottom>
-                  <v-btn slot="activator" dark fab small class="blue-button" :href="entry.url"><v-icon>open_in_new</v-icon></v-btn>
+                  <v-btn slot="activator" dark fab small class="blue-button elevation-3" :href="entry.url"><v-icon>open_in_new</v-icon></v-btn>
                   <span>Open {{ entry.name }}</span>
                 </v-tooltip>
                 <v-tooltip bottom>
-                  <v-btn slot="activator" dark fab small class="blue-button" v-on:click="updateStatus(entry.target_id)"><v-icon>refresh</v-icon></v-btn>
+                  <v-btn slot="activator" dark fab small class="blue-button elevation-3" v-on:click="updateStatus(index)"><v-icon>refresh</v-icon></v-btn>
                   <span>Check status of {{ entry.name }}</span>
                 </v-tooltip>
                 <v-tooltip bottom>
-                  <v-btn slot="activator" dark fab small class="blue-button" @click.stop="fetchLogs(entry.target_id)"><v-icon>assignment</v-icon></v-btn>
+                  <v-btn slot="activator" dark fab small class="blue-button elevation-3" @click.stop="fetchLogs(entry.target_id)"><v-icon>assignment</v-icon></v-btn>
                   <span>Show logs of {{ entry.name }}</span>
                 </v-tooltip>
               </div>
@@ -58,11 +61,11 @@
       </v-dialog>
 
       <v-tooltip bottom>
-        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="updateStatus('')"><v-icon>refresh</v-icon></v-btn>
+        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="updateAll()"><v-icon>refresh</v-icon></v-btn>
         <span>Check status of all services</span>
       </v-tooltip>
       <v-tooltip bottom>
-        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="fetchLogs('')"><v-icon>assignment</v-icon></v-btn>
+        <v-btn slot="activator" dark fab small class="blue-button" v-on:click="fetchLogs()"><v-icon>assignment</v-icon></v-btn>
         <span>Show all logs</span>
       </v-tooltip>
     </v-container>
@@ -74,9 +77,9 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      statusServiceUrl: location.protocol + '//' + location.hostname,
+      statusServiceUrl: location.protocol + '//' + location.hostname + ':5000',
       refreshInterval: 60000,
-      entries: [],
+      entries: null,
       items: [],
       logsDialog: false,
       logsDialogTitle: '',
@@ -115,32 +118,41 @@ export default {
   },
   methods: {
     startAutoRefresh: function () {
+      clearInterval(this.timer)
+
       this.timer = setInterval(function() {
-        this.fetchStatus('')
+        this.fetchStatus()
       }.bind(this), this.refreshInterval);
     },
-    fetchStatus: function (targetId) {
-      this.entries.forEach(function (value) {
-        value.refreshed = false
-      }.bind(this))
-      this.$http.get(this.statusServiceUrl + '/get_status').then(response => {
-        var parsedEntries = JSON.parse(response.bodyText)
-        parsedEntries.forEach(function (value) {
-          if (targetId == '' || value.target_id == targetId) {
-            value.refreshed = true
-          }
-        }.bind(this))
-        this.entries = parsedEntries
-      }, response => {
+    async fetchStatus (targetId) {
+      const response = await this.$http.get(this.statusServiceUrl + '/get_status')
+
+      const parsed = JSON.parse(response.bodyText)
+      parsed.forEach(entry => {
+        entry.disabled = (targetId === entry.target_id)
+
+        setTimeout(() => {
+          entry.disabled = false
+        }, Math.random() * 1000)
       })
+
+      this.$set(this, 'entries', parsed)
     },
-    updateStatus: function (targetId) {
-      clearInterval(this.timer)
-      this.$http.get(this.statusServiceUrl + '/update_status' + (targetId != '' ? '/' + targetId : '')).then(response => {
-        this.fetchStatus(targetId)
-        this.startAutoRefresh()
-      }, response => {
+    async updateAll () {
+      this.startAutoRefresh()
+      this.entries.forEach(function (value) {
+        value.disabled = true
       })
+
+      await this.$http.get(this.statusServiceUrl + '/update_status')
+      this.fetchStatus()
+    },
+    async updateStatus (index) {
+      const targetId = this.entries[index].target_id
+      this.entries[index].disabled = true
+
+      await this.$http.get(this.statusServiceUrl + '/update_status/' + targetId)
+      this.fetchStatus(targetId)
     },
     fetchLogs: function (targetId) {
       this.$http.get(this.statusServiceUrl + '/get_logs' + (targetId != '' ? '/' + targetId : '')).then(response => {
@@ -218,7 +230,11 @@ h1 {
   margin-bottom: 2px !important;
 }
 
-.fadeAnimation {
+.card.disabled { 
+  opacity: 0.4;
+}
+
+.card.enabled {
   -webkit-animation: fadein 1.5s; /* Safari, Chrome and Opera > 12.1 */
      -moz-animation: fadein 1.5s; /* Firefox < 16 */
       -ms-animation: fadein 1.5s; /* Internet Explorer */
