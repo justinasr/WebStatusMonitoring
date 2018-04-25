@@ -43,12 +43,7 @@
         "name": "Stats (CC7) couchDB",
         "url": "http://vocms074:5984",
         "target_id": "stats-couchdb"
-    },
-    {
-        "name": "Stats (CC7) couchdb-lucene",
-        "url": "http://vocms074:5984/_fti/",
-        "target_id": "stats-couchdb-lucene"
-    },
+    }
     {
         "name": "Stats2 website",
         "url": "http://instance3.cern.ch:5000",
