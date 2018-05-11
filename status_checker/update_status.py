@@ -13,6 +13,7 @@ class UpdateStatus(Resource):
     def __init__(self):
         self.cookie_files = {}
         self.logger = logging.getLogger('logger')
+        self.db = Database()
 
     def make_request(self, url, cookie_path):
         self.logger.info('Will make request to %s' % (url))
@@ -60,12 +61,11 @@ class UpdateStatus(Resource):
         targets = json.load(open(config.get('targets', 'targets.json')))
         min_refresh_interval = config.getint('min-refresh-interval', 60)
         updated_targets = []
-        db = Database()
         for target in targets:
             if target_name is not None and target['target_id'] != target_name:
                 continue
 
-            newest_entries = db.get_entries(target['target_id'], 1)
+            newest_entries = self.db.get_entries(target['target_id'], 1)
             if len(newest_entries) > 0:
                 now = datetime.datetime.now()
                 entry_date = datetime.datetime.strptime(newest_entries[0]['date'][:19], '%Y-%m-%d %H:%M:%S')
@@ -77,7 +77,7 @@ class UpdateStatus(Resource):
             target['code'] = code
             target['output_title'] = output_title
             self.logger.info('Code for "%s" (%s) is %d' % (target['name'], target['url'], target['code']))
-            db.add_entry_for_target(target)
+            self.db.add_entry_for_target(target)
             updated_targets.append(target)
 
         self.parse_statuses(updated_targets)
@@ -90,7 +90,11 @@ class UpdateStatus(Resource):
         message = ""
         for target in targets:
             if target['code'] != 200:
-                message += '%s is not ok. It returned code %s. \n' % (target['name'], target['code'])
+                two_target_entries = self.db.get_entries(target['target_id'], 2)
+                if len(two_target_entries) > 1 and two_target_entries[1]['code'] == 200:
+                    message += '%s is not ok. It returned code %s. \n' % (target['name'], target['code'])
+                else:
+                    self.logger.warning('%s is not OK, but notification was already sent' % (target))
 
         if len(message) == 0:
             self.logger.info('All services seem to be working. Will do nothing')

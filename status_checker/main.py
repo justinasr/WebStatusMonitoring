@@ -63,11 +63,7 @@ def setup_logging():
                                            'a',
                                            max_log_file_size,
                                            max_log_file_count)
-    formatter = logging.Formatter(fmt='[%(asctime)s]\
-                                       [%(filename)s->\
-                                       %(funcName)s:\
-                                       %(lineno)d]\
-                                       [%(levelname)s] %(message)s',
+    formatter = logging.Formatter(fmt='[%(asctime)s][%(filename)s->%(funcName)s:%(lineno)d][%(levelname)s] %(message)s',
                                   datefmt='%d/%b/%Y:%H:%M:%S')
     handler.setFormatter(formatter)
     logger.addHandler(handler)
