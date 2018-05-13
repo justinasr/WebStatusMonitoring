@@ -1,10 +1,10 @@
 <template>
   <v-app>
-    <h1>Are shadows ok?</h1>
+    <h1>Are things still working?</h1>
     <h3>WebStatusMonitoring</h3>
     <h4>Running on Python {{ pythonVersion }}</h4>
     <v-container grid-list-md>
-      <v-layout row wrap class="kortos">
+      <v-layout row wrap>
         <v-flex lg3 md4 sm6 xs12 v-for="(entry, index) in entries" :key="entry.target_id">
           <v-card v-bind:class="'elevation-10 ' + (entry.disabled ? 'disabled':'enabled')" text-xs-center :color="entry.code | codeToColor">
             <v-card-text class="title"><b>{{ entry.name }}</b></v-card-text>
@@ -74,7 +74,7 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'MainComponent',
   data () {
     return {
       statusServiceUrl: location.protocol + '//' + location.hostname + ':5000',
@@ -155,7 +155,7 @@ export default {
       this.fetchStatus(targetId)
     },
     fetchLogs: function (targetId) {
-      this.$http.get(this.statusServiceUrl + '/get_logs' + (targetId != '' ? '/' + targetId : '')).then(response => {
+      this.$http.get(this.statusServiceUrl + '/get_logs' + (targetId != undefined ? '/' + targetId : '')).then(response => {
         this.items = JSON.parse(response.bodyText)
         this.logsDialog = true
         if (targetId == '') {
