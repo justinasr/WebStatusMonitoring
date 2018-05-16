@@ -46,7 +46,7 @@
     },
     {
         "name": "Stats2 website",
-        "url": "http://instance3.cern.ch:5000",
+        "url": "https://instance3.cern.ch",
         "target_id": "stats2-web",
         "cookie_path": "prod.cookie"
     }
