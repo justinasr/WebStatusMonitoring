@@ -17,6 +17,12 @@
         "cookie_path": "prod.cookie"
     },
     {
+        "name": "pMp Production Elasticsearch",
+        "url": "https://cms-pdmv.cern.ch/pmp/api/SMP-RunIISummer15GS-00193/historical/100/,/all/all",
+        "target_id": "pmp-prod-elasticsearch",
+        "cookie_path": "prod.cookie"
+    },
+    {
         "name": "McM Development website",
         "url": "http://cms-pdmv-dev.cern.ch/mcm/",
         "target_id": "mcm-dev-web",
@@ -31,6 +37,12 @@
         "name": "pMp Development website",
         "url": "http://cms-pdmv-dev.cern.ch/pmp/",
         "target_id": "pmp-dev-web",
+        "cookie_path": "dev.cookie"
+    },
+    {
+        "name": "pMp Development Elasticsearch",
+        "url": "https://cms-pdmv-dev.cern.ch/pmp/api/SMP-RunIISummer15GS-00193/historical/100/,/all/all",
+        "target_id": "pmp-dev-elasticsearch",
         "cookie_path": "dev.cookie"
     },
     {
