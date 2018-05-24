@@ -2,6 +2,7 @@
     {
         "name": "McM Production website",
         "url": "https://cms-pdmv.cern.ch/mcm/",
+        "display_url": "https://cms-pdmv.cern.ch/mcm/",
         "target_id": "mcm-prod-web",
         "cookie_path": "prod.cookie"
     },
@@ -13,6 +14,7 @@
     {
         "name": "pMp Production website",
         "url": "http://cms-pdmv.cern.ch/pmp/",
+        "display_url": "http://cms-pdmv.cern.ch/pmp/",
         "target_id": "pmp-prod-web",
         "cookie_path": "prod.cookie"
     },
@@ -25,6 +27,7 @@
     {
         "name": "McM Development website",
         "url": "http://cms-pdmv-dev.cern.ch/mcm/",
+        "display_url": "http://cms-pdmv-dev.cern.ch/mcm/",
         "target_id": "mcm-dev-web",
         "cookie_path": "dev.cookie"
     },
@@ -36,6 +39,7 @@
     {
         "name": "pMp Development website",
         "url": "http://cms-pdmv-dev.cern.ch/pmp/",
+        "display_url": "http://cms-pdmv-dev.cern.ch/pmp/",
         "target_id": "pmp-dev-web",
         "cookie_path": "dev.cookie"
     },
@@ -48,6 +52,7 @@
     {
         "name": "Stats (CC7) website",
         "url": "http://cms-pdmv.cern.ch/stats/",
+        "display_url": "http://cms-pdmv.cern.ch/stats/",
         "target_id": "stats-web",
         "cookie_path": "prod.cookie"
     },
@@ -59,7 +64,15 @@
     {
         "name": "Stats2 website",
         "url": "https://instance3.cern.ch",
+        "display_url": "https://instance3.cern.ch",
         "target_id": "stats2-web",
+        "cookie_path": "prod.cookie"
+    },
+    {
+        "name": "Relmon Service website",
+        "url": "https://cms-pdmv.cern.ch/relmonsvc",
+        "display_url": "https://cms-pdmv.cern.ch/relmonsvc",
+        "target_id": "relmonsvc-web",
         "cookie_path": "prod.cookie"
     }
 ]

@@ -59,7 +59,7 @@ class UpdateStatus(Resource):
 
         config = read_config()
         targets = json.load(open(config.get('targets', 'targets.json')))
-        min_refresh_interval = config.getint('min-refresh-interval', 60)
+        min_refresh_interval = int(config.get('min-refresh-interval', 60))
         updated_targets = []
         for target in targets:
             if target_name is not None and target['target_id'] != target_name:

@@ -41,7 +41,7 @@ def index_simple(name=None):
                            targets=targets,
                            all_logs=all_logs,
                            version=version,
-                           debug=config.getboolean('debug-mode', False))
+                           debug=bool(config.get('debug-mode', False)))
 
 
 @app.route('/python_version')
@@ -74,8 +74,8 @@ def run_flask():
     logger = logging.getLogger('logger')
     logger.info('Starting app...')
     config = read_config()
-    debug_mode = config.getboolean('debug-mode', False)
-    port = config.getint('port', 80)
+    debug_mode = bool(config.get('debug-mode', False))
+    port = int(config.get('port', 80))
     app.run(host='0.0.0.0',
             port=port,
             debug=debug_mode,

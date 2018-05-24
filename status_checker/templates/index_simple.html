@@ -87,7 +87,9 @@
                     </div>
                     <div class="card-footer">
                         <a href="#" class="btn btn-primary" onclick=updateTarget("{{ entry.target_id }}")>Update now</a>
-                        <a href="{{ entry.url }}" class="btn btn-primary">Go there</a>
+                        {% if entry.display_url %}
+                            <a href="{{ entry.display_url }}" class="btn btn-primary">Go there</a>
+                        {% endif %}
                     </div>
                 </div>
                 {% if (loop.index0 + 1) % 4 == 0 %}
@@ -111,7 +113,6 @@
                             <th>Date</th>
                             <th>Instance</th>
                             <th>Code</th>
-                            <th>URL</th>
                             <th>Output title</th>
                         </tr>
                     </thead>
@@ -128,7 +129,6 @@
                                 <td>{{ entry.date }}</td>
                                 <td>{{ entry.name }}</td>
                                 <td>{{ entry.code }}</td>
-                                <td><a href="{{ entry.url }}">{{ entry.url }}</a></td>
                                 <td style="max-width: 300px;">{{ entry.output_title }}</td>
                             </tr>
                         {% endfor %}

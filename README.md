@@ -2,7 +2,7 @@
 
 A service that checks whether webpages ar up (returning HTTP status code 200). If necessary, service can use a cookie, specified in configuration file. All checks are saved in local SQLite database.
 
-Project is is compatible with Python 3.
+Project is is compatible with Python 2 and Python 3.
 
 #### Getting started
 1. Clone this project

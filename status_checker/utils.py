@@ -1,7 +1,10 @@
 import subprocess
 import string
 import random
-import configparser
+try:
+    import configparser
+except:
+    import ConfigParser as configparser
 import re
 import sys
 
@@ -45,8 +48,5 @@ def read_config():
 
     config = configparser.ConfigParser()
     config.read('config.cfg')
-    if name in config:
-        CONFIG = config[name]
-        return CONFIG
-    else:
-        return None
+    CONFIG = dict(config.items(name))
+    return CONFIG

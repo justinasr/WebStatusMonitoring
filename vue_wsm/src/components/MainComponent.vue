@@ -17,7 +17,7 @@
             </v-card-text>
             <v-card-actions>
               <div class="margin-auto">
-                <v-tooltip bottom>
+                <v-tooltip bottom v-if="entry.display_url">
                   <v-btn slot="activator" dark fab small class="blue-button elevation-3" :href="entry.url"><v-icon>open_in_new</v-icon></v-btn>
                   <span>Open {{ entry.name }}</span>
                 </v-tooltip>
@@ -46,7 +46,7 @@
                   <v-list-tile-content>
                     <v-list-tile-title><div class="status-code" :class="item.code | codeToColor ">{{ item.code }}</div> {{ item.name }}</v-list-tile-title>
                     <v-list-tile-sub-title>Title: {{ item.output_title }}</v-list-tile-sub-title>
-                    <v-list-tile-sub-title>{{ item.date }} <a :href="item.url">Link</a></v-list-tile-sub-title>
+                    <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-divider v-if="index + 1 < items.length" :key="index"></v-divider>
