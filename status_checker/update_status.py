@@ -6,7 +6,7 @@ import subprocess
 import re
 import logging
 import flask
-import datetime
+from time import strptime, mktime, time
 
 
 class UpdateStatus(Resource):
@@ -67,10 +67,10 @@ class UpdateStatus(Resource):
 
             newest_entries = self.db.get_entries(target['target_id'], 1)
             if len(newest_entries) > 0:
-                now = datetime.datetime.now()
-                entry_date = datetime.datetime.strptime(newest_entries[0]['date'][:19], '%Y-%m-%d %H:%M:%S')
+                now = int(time())
+                entry_date = int(mktime(strptime(newest_entries[0]['date'][:19], '%Y-%m-%d %H:%M:%S')))
                 delta = now - entry_date
-                if delta.total_seconds() < min_refresh_interval:
+                if delta < min_refresh_interval:
                     continue
 
             code, output_title = self.make_request(target['url'], target.get('cookie_path'))
@@ -103,3 +103,7 @@ class UpdateStatus(Resource):
         self.logger.info('Some services are broken, will notify')
         subject = 'Some services are not ok'
         notify(subject, message)
+
+
+if __name__ == '__main__':
+    UpdateStatus().get()
