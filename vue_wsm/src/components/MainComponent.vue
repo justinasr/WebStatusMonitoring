@@ -77,7 +77,7 @@ export default {
   name: 'MainComponent',
   data () {
     return {
-      statusServiceUrl: location.protocol + '//' + location.hostname,
+      statusServiceUrl: location.protocol + '//' + location.hostname + location.pathname,
       refreshInterval: 60000,
       entries: null,
       items: [],
