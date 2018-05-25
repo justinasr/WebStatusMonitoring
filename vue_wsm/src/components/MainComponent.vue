@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <h1>Are things still working?</h1>
-    <h3>WebStatusMonitoring</h3>
+    <h1>Status Checker</h1>
+    <h3><a href="https://github.com/justinasr/WebStatusMonitoring">WebStatusMonitoring</a></h3>
     <h4>Running on Python {{ pythonVersion }}</h4>
     <v-container grid-list-md>
       <v-layout row wrap>
@@ -241,6 +241,15 @@ h1 {
       -ms-animation: fadein 1.5s; /* Internet Explorer */
        -o-animation: fadein 1.5s; /* Opera < 12.1 */
           animation: fadein 1.5s;
+}
+
+a {
+  text-decoration: none;
+  color: #2c3e50 !important;
+}
+
+a:hover {
+  color: #2c3e50 !important;
 }
 
 @keyframes fadein {
