@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from database import Database
-from utils import read_config
+from utils import read_config, timestamp_to_string
 import json
 import logging
 import flask
@@ -26,10 +26,13 @@ class Status(Resource):
 
             newest_log = target_logs[0]
             target['code'] = newest_log['code']
-            target['checked'] = newest_log['date'][:19]
+            target['checked'] = timestamp_to_string(newest_log['timestamp'])
             target['output_title'] = newest_log['output_title']
             if 'cookie_path' in target:
                 del target['cookie_path']
+
+            if 'url' in target:
+                del target['url']
 
         self.logger.info('Return status for %d objects' % (len(targets)))
         resp = flask.Response(json.dumps(targets))
@@ -48,7 +51,7 @@ class Logs(Resource):
         db = Database()
         all_logs = db.get_entries(target_name, limit)
         for log in all_logs:
-            log['date'] = log['date'][:16]
+            log['checked'] = timestamp_to_string(log['timestamp'])
 
         self.logger.info('Will return %d log entries' % (len(all_logs)))
         resp = flask.Response(json.dumps(all_logs))

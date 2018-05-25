@@ -18,5 +18,4 @@ status_checker/logs/*
 vuejs/
 
 # vue
-vue_wsm/build
 vue_wsm/node_modules

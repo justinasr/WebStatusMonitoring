@@ -6,7 +6,7 @@ import subprocess
 import re
 import logging
 import flask
-from time import strptime, mktime, time
+import time
 
 
 class UpdateStatus(Resource):
@@ -18,20 +18,20 @@ class UpdateStatus(Resource):
     def make_request(self, url, cookie_path):
         self.logger.info('Will make request to %s' % (url))
         try:
-            args = ["curl", url, "-s", "-k", "-L", "-m", "60", "-w", "%{http_code}", "-o", "/dev/null"]
+            args = ['curl', url, '-s', '-k', '-L', '-m', '60', '-w', '%{http_code}', '-o', '/dev/null']
             if cookie_path:
-                cookie_path = "cookies/" + cookie_path
+                cookie_path = 'cookies/' + cookie_path
                 self.logger.info('Append cookie "%s" while making request to %s' % (cookie_path, url))
-                args += ["--cookie", cookie_path]
+                args += ['--cookie', cookie_path]
 
             args = ' '.join(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
             code = proc.communicate()[0]
             code = int(code)
 
-            args = ["curl", url, "-s", "-k", "-L", "-m", "60"]
+            args = ['curl', url, '-s', '-k', '-L', '-m', '60']
             if cookie_path:
-                args += ["--cookie", cookie_path]
+                args += ['--cookie', cookie_path]
 
             args = ' '.join(args)
             proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
@@ -67,8 +67,8 @@ class UpdateStatus(Resource):
 
             newest_entries = self.db.get_entries(target['target_id'], 1)
             if len(newest_entries) > 0:
-                now = int(time())
-                entry_date = int(mktime(strptime(newest_entries[0]['date'][:19], '%Y-%m-%d %H:%M:%S')))
+                now = time.time()
+                entry_date = newest_entries[0]['timestamp']
                 delta = now - entry_date
                 if delta < min_refresh_interval:
                     continue
@@ -81,7 +81,7 @@ class UpdateStatus(Resource):
             updated_targets.append(target)
 
         self.parse_statuses(updated_targets)
-        resp = flask.Response(json.dumps(updated_targets))
+        resp = flask.Response(json.dumps({}))
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Content-Type'] = 'application/json'
         return resp

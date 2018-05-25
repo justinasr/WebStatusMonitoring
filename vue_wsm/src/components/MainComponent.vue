@@ -11,6 +11,7 @@
             <v-card-text v-if="!entry.disabled">
               <p>Status: {{ entry.code | codeToText }}</p>
               <p v-if="entry.code != -1">Last check: {{ entry.checked }}</p>
+              <p>Title: {{ entry.output_title }}</p>
             </v-card-text>
             <v-card-text v-if="entry.disabled">
               <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -46,7 +47,7 @@
                   <v-list-tile-content>
                     <v-list-tile-title><div class="status-code" :class="item.code | codeToColor ">{{ item.code }}</div> {{ item.name }}</v-list-tile-title>
                     <v-list-tile-sub-title>Title: {{ item.output_title }}</v-list-tile-sub-title>
-                    <v-list-tile-sub-title>{{ item.date }}</v-list-tile-sub-title>
+                    <v-list-tile-sub-title>Check: {{ item.checked }}</v-list-tile-sub-title>
                   </v-list-tile-content>
                 </v-list-tile>
                 <v-divider v-if="index + 1 < items.length" :key="index"></v-divider>
@@ -77,7 +78,7 @@ export default {
   name: 'MainComponent',
   data () {
     return {
-      statusServiceUrl: location.protocol + '//' + location.hostname + location.pathname,
+      statusServiceUrl: location.protocol + '//' + location.hostname + (location.pathname != '/' ? location.pathname : ''),
       refreshInterval: 60000,
       entries: null,
       items: [],
@@ -158,7 +159,7 @@ export default {
       this.$http.get(this.statusServiceUrl + '/get_logs' + (targetId != undefined ? '/' + targetId : '')).then(response => {
         this.items = JSON.parse(response.bodyText)
         this.logsDialog = true
-        if (targetId == '') {
+        if (targetId == undefined) {
           this.logsDialogTitle = 'All logs'
         } else {
           if (this.items.length > 0) {

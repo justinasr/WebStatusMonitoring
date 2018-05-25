@@ -1,5 +1,5 @@
 import sqlite3
-import datetime
+import time
 import os.path
 import logging
 
@@ -9,7 +9,7 @@ CREATE_TABLE_QUERY = """
         name VARCHAR(127),
         url VARCHAR(255),
         code INTEGER,
-        date DATETIME,
+        timestamp INTEGER,
         output_title TEXT
     );
 """
@@ -46,12 +46,13 @@ class Database:
     def get_entries(self, target_id=None, limit=20):
         conn = self.get_connection()
         c = conn.cursor()
+        query = 'SELECT target_id, name, code, timestamp, output_title FROM check_log '
         if target_id is None:
             t = (limit,)
-            query = 'SELECT target_id, name, url, code, date, output_title FROM check_log ORDER BY date DESC LIMIT ?'
+            query += 'ORDER BY timestamp DESC LIMIT ?'
         else:
             t = (target_id, limit)
-            query = 'SELECT target_id, name, url, code, date, output_title FROM check_log WHERE target_id=? ORDER BY date DESC LIMIT ?'
+            query += 'WHERE target_id=? ORDER BY timestamp DESC LIMIT ?'
 
         c.execute(query, t)
         result = c.fetchall()
@@ -61,7 +62,12 @@ class Database:
     def add_entry_for_target(self, target_dict):
         conn = self.get_connection()
         c = conn.cursor()
-        t = (target_dict['target_id'], target_dict['name'], target_dict['url'], target_dict['code'], datetime.datetime.now(), target_dict['output_title'])
+        t = (target_dict['target_id'],
+             target_dict['name'],
+             target_dict['url'],
+             target_dict['code'],
+             int(time.time()),
+             target_dict['output_title'])
         query = 'INSERT INTO check_log VALUES (?, ?, ?, ?, ?, ?)'
         c.execute(query, t)
         conn.commit()

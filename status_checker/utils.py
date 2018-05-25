@@ -7,6 +7,7 @@ except:
     import ConfigParser as configparser
 import re
 import sys
+import time
 
 SIGNATURE = '\n\nSincerely,\nStatus checker at '
 CONFIG = None
@@ -50,3 +51,7 @@ def read_config():
     config.read('config.cfg')
     CONFIG = dict(config.items(name))
     return CONFIG
+
+
+def timestamp_to_string(timestamp):
+    return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timestamp))
