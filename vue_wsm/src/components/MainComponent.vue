@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <h1>Status Checker</h1>
-    <h3><a href="https://github.com/justinasr/WebStatusMonitoring">WebStatusMonitoring</a></h3>
+    <h3><a class="gray" href="https://github.com/justinasr/WebStatusMonitoring">WebStatusMonitoring</a></h3>
     <h4>Running on Python {{ pythonVersion }}</h4>
     <v-container grid-list-md>
       <v-layout row wrap>
@@ -19,7 +19,7 @@
             <v-card-actions>
               <div class="margin-auto">
                 <v-tooltip bottom v-if="entry.display_url">
-                  <v-btn slot="activator" dark fab small class="blue-button elevation-3" :href="entry.display_url"><v-icon>open_in_new</v-icon></v-btn>
+                  <v-btn slot="activator" dark fab small class="blue-button elevation-3" :href="entry.display_url" target="_blank"><v-icon>open_in_new</v-icon></v-btn>
                   <span>Open {{ entry.name }}</span>
                 </v-tooltip>
                 <v-tooltip bottom>
@@ -204,7 +204,6 @@ h1 {
 
 .blue-button {
   background-color: #007bff !important;
-  color: #ffffff !important;
 }
 
 .margin-auto {
@@ -244,12 +243,12 @@ h1 {
           animation: fadein 1.5s;
 }
 
-a {
+.gray {
   text-decoration: none;
   color: #2c3e50 !important;
 }
 
-a:hover {
+.gray:hover {
   color: #2c3e50 !important;
 }
 
