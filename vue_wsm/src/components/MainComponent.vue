@@ -19,7 +19,7 @@
             <v-card-actions>
               <div class="margin-auto">
                 <v-tooltip bottom v-if="entry.display_url">
-                  <v-btn slot="activator" dark fab small class="blue-button elevation-3" :href="entry.url"><v-icon>open_in_new</v-icon></v-btn>
+                  <v-btn slot="activator" dark fab small class="blue-button elevation-3" :href="entry.display_url"><v-icon>open_in_new</v-icon></v-btn>
                   <span>Open {{ entry.name }}</span>
                 </v-tooltip>
                 <v-tooltip bottom>
@@ -204,6 +204,7 @@ h1 {
 
 .blue-button {
   background-color: #007bff !important;
+  color: #ffffff !important;
 }
 
 .margin-auto {
