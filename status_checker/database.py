@@ -3,6 +3,7 @@ import time
 import os.path
 import logging
 
+
 CREATE_TABLE_QUERY = """
     CREATE TABLE check_log (
         target_id VARCHAR(127),
@@ -10,7 +11,7 @@ CREATE_TABLE_QUERY = """
         url VARCHAR(255),
         code INTEGER,
         timestamp INTEGER,
-        output_title TEXT
+        response_title TEXT
     );
 """
 
@@ -46,7 +47,7 @@ class Database:
     def get_entries(self, target_id=None, limit=20):
         conn = self.get_connection()
         c = conn.cursor()
-        query = 'SELECT target_id, name, code, timestamp, output_title FROM check_log '
+        query = 'SELECT target_id, name, code, timestamp, response_title FROM check_log '
         if target_id is None:
             t = (limit,)
             query += 'ORDER BY timestamp DESC LIMIT ?'
@@ -67,7 +68,7 @@ class Database:
              target_dict['url'],
              target_dict['code'],
              int(time.time()),
-             target_dict['output_title'])
+             target_dict['response_title'])
         query = 'INSERT INTO check_log VALUES (?, ?, ?, ?, ?, ?)'
         c.execute(query, t)
         conn.commit()

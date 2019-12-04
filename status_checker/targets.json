@@ -4,10 +4,10 @@
         "url": "https://cms-pdmv.cern.ch/mcm/",
         "display_url": "https://cms-pdmv.cern.ch/mcm/",
         "target_id": "mcm-prod-web",
-        "cookie_path": "prod.cookie"
+        "cookie_path": "prod-cookie.txt"
     },
     {
-        "name": "McM Production couchDB",
+        "name": "McM Production DB",
         "url": "http://vocms090:5984/",
         "target_id": "mcm-prod-couchdb"
     },
@@ -16,23 +16,23 @@
         "url": "http://cms-pdmv.cern.ch/pmp/",
         "display_url": "http://cms-pdmv.cern.ch/pmp/",
         "target_id": "pmp-prod-web",
-        "cookie_path": "prod.cookie"
+        "cookie_path": "prod-cookie.txt"
     },
     {
         "name": "pMp Production Elasticsearch",
-        "url": "https://cms-pdmv.cern.ch/pmp/api/SMP-RunIISummer15GS-00193/historical/100/,/all/all",
+        "url": "https://cms-pdmv.cern.ch/pmp/api/overall?r=requests,campaigns,workflows,rereco_requests,relval_requests,tags",
         "target_id": "pmp-prod-elasticsearch",
-        "cookie_path": "prod.cookie"
+        "cookie_path": "prod-cookie.txt"
     },
     {
         "name": "McM Development website",
         "url": "http://cms-pdmv-dev.cern.ch/mcm/",
         "display_url": "http://cms-pdmv-dev.cern.ch/mcm/",
         "target_id": "mcm-dev-web",
-        "cookie_path": "dev.cookie"
+        "cookie_path": "dev-cookie.txt"
     },
     {
-        "name": "McM Development couchDB",
+        "name": "McM Development DB",
         "url": "http://vocms085:5984/",
         "target_id": "mcm-dev-couchdb"
     },
@@ -41,38 +41,38 @@
         "url": "http://cms-pdmv-dev.cern.ch/pmp/",
         "display_url": "http://cms-pdmv-dev.cern.ch/pmp/",
         "target_id": "pmp-dev-web",
-        "cookie_path": "dev.cookie"
+        "cookie_path": "dev-cookie.txt"
     },
     {
         "name": "pMp Development Elasticsearch",
-        "url": "https://cms-pdmv-dev.cern.ch/pmp/api/SMP-RunIISummer15GS-00193/historical/100/,/all/all",
+        "url": "https://cms-pdmv-dev.cern.ch/pmp/api/overall?r=requests,campaigns,workflows,rereco_requests,relval_requests,tags",
         "target_id": "pmp-dev-elasticsearch",
-        "cookie_path": "dev.cookie"
+        "cookie_path": "dev-cookie.txt"
     },
     {
-        "name": "Stats (CC7) website",
+        "name": "Stats website",
         "url": "http://cms-pdmv.cern.ch/stats/",
         "display_url": "http://cms-pdmv.cern.ch/stats/",
         "target_id": "stats-web",
-        "cookie_path": "prod.cookie"
+        "cookie_path": "prod-cookie.txt"
     },
     {
-        "name": "Stats (CC7) couchDB",
+        "name": "Stats DB",
         "url": "http://vocms074:5984",
         "target_id": "stats-couchdb"
     },
     {
-        "name": "Stats2 website",
-        "url": "https://instance3.cern.ch",
-        "display_url": "https://instance3.cern.ch",
-        "target_id": "stats2-web",
-        "cookie_path": "prod.cookie"
+        "name": "Status checker",
+        "url": "https://cms-pdmv.cern.ch/status",
+        "display_url": "https://cms-pdmv.cern.ch/status",
+        "target_id": "status-checker",
+        "cookie_path": "prod-cookie.txt"
     },
     {
         "name": "Relmon Service website",
         "url": "https://cms-pdmv.cern.ch/relmonsvc",
         "display_url": "https://cms-pdmv.cern.ch/relmonsvc",
         "target_id": "relmonsvc-web",
-        "cookie_path": "prod.cookie"
+        "cookie_path": "prod-cookie.txt"
     }
 ]

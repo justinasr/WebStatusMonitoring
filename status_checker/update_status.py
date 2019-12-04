@@ -1,8 +1,7 @@
 from flask_restful import Resource
-import json
 from database import Database
-from utils import notify, read_config
-import subprocess
+from utils import send_email, read_config, setup_console_logging, make_request
+import json
 import re
 import logging
 import flask
@@ -15,95 +14,101 @@ class UpdateStatus(Resource):
         self.logger = logging.getLogger('logger')
         self.db = Database()
 
-    def make_request(self, url, cookie_path):
-        self.logger.info('Will make request to %s' % (url))
-        try:
-            args = ['curl', url, '-s', '-k', '-L', '-m', '60', '-w', '%{http_code}', '-o', '/dev/null']
-            if cookie_path:
-                cookie_path = 'cookies/' + cookie_path
-                self.logger.info('Append cookie "%s" while making request to %s' % (cookie_path, url))
-                args += ['--cookie', cookie_path]
-
-            args = ' '.join(args)
-            proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
-            code = proc.communicate()[0]
-            code = int(code)
-
-            args = ['curl', url, '-s', '-k', '-L', '-m', '60']
-            if cookie_path:
-                args += ['--cookie', cookie_path]
-
-            args = ' '.join(args)
-            proc = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
-            output_title = str(proc.communicate()[0])
-            m = re.search('<title>(.*?)</title>', output_title)
-            if m:
-                output_title = m.group(1)
-                self.logger.info('Found title for %s. Title is "%s"' % (url, output_title))
-            else:
-                output_title = '<no title>'
-
-            self.logger.info('Finished request to %s. Code: %d, title: "%s"' % (url, code, output_title))
-        except Exception as ex:
-            self.logger.error('Got exception while making a request to %s. Exception %s' % (url, ex))
-            code = -1
-            output_title = ''
-
-        return (code, output_title)
-
-    def get(self, target_name=None):
-        if target_name:
-            self.logger.info('Check "%s" status' % (target_name))
+    def get(self, target_id=None):
+        if target_id:
+            self.logger.info(f'Check "{target_id}" status')
         else:
             self.logger.info('Check status for all targets')
 
         config = read_config()
-        targets = json.load(open(config.get('targets', 'targets.json')))
-        min_refresh_interval = int(config.get('min-refresh-interval', 60))
-        updated_targets = []
-        for target in targets:
-            if target_name is not None and target['target_id'] != target_name:
-                continue
-
-            newest_entries = self.db.get_entries(target['target_id'], 1)
-            if len(newest_entries) > 0:
-                now = time.time()
-                entry_date = newest_entries[0]['timestamp']
-                delta = now - entry_date
-                if delta < min_refresh_interval:
-                    continue
-
-            code, output_title = self.make_request(target['url'], target.get('cookie_path'))
-            target['code'] = code
-            target['output_title'] = output_title
-            self.logger.info('Code for "%s" (%s) is %d' % (target['name'], target['url'], target['code']))
-            self.db.add_entry_for_target(target)
-            updated_targets.append(target)
-
-        self.parse_statuses(updated_targets)
-        resp = flask.Response(json.dumps({}))
+        response_dict = self.check(config, target_id)
+        resp = flask.Response(json.dumps(response_dict, indent=2))
         resp.headers['Access-Control-Allow-Origin'] = '*'
         resp.headers['Content-Type'] = 'application/json'
         return resp
 
-    def parse_statuses(self, targets):
-        message = ""
-        for target in targets:
-            if target['code'] != 200:
-                two_target_entries = self.db.get_entries(target['target_id'], 2)
-                if len(two_target_entries) > 1 and two_target_entries[1]['code'] == 200:
-                    message += '%s is not ok. It returned code %s. \n' % (target['name'], target['code'])
+    def check(self, config, check_target_with_id=None):
+        all_targets = json.load(open(config.get('targets')))
+        if check_target_with_id is not None:
+            all_targets = [x for x in all_targets if x['target_id'] == check_target_with_id]
+
+        min_refresh_interval = int(config.get('min-refresh-interval', 60))
+        updated_targets = []
+        broken_target_messages = []
+        returned_target_messages = []
+        self.logger.info('Found %s targets', len(all_targets))
+        for target in all_targets:
+            target_url = target['url']
+            target_name = target['name']
+            previous_code = -1
+            newest_entries = self.db.get_entries(target['target_id'], 1)
+            if len(newest_entries) > 0:
+                now = time.time()
+                last_entry_timestamp = newest_entries[0]['timestamp']
+                previous_code = newest_entries[0]['code']
+                if now - last_entry_timestamp < min_refresh_interval:
+                    self.logger.info('Not checking %s because it was checked less than %s seconds ago',
+                                     target_name,
+                                     min_refresh_interval)
+                    continue
+
+            self.logger.info('Will make request to %s', target_url)
+            try:
+                target_cookie = target.get('cookie_path')
+                if target_cookie:
+                    target_cookie = f'cookies/{target_cookie}'
+
+                code, response = make_request(target_url, target_cookie)
+                re_result = re.search('<title>(.*?)</title>', response)
+                if re_result:
+                    response_title = re_result.group(1)
+                    self.logger.info('Found title for %s. Title is "%s"', target_url, response_title)
                 else:
-                    self.logger.warning('%s is not OK, but notification was already sent' % (target))
+                    response_title = '<no title>'
 
-        if len(message) == 0:
-            self.logger.info('All services seem to be working. Will do nothing')
-            return
+                self.logger.info('Finished request to %s. Code: %d, title: "%s"', target_url, code, response_title)
+            except Exception as ex:
+                self.logger.error('Got exception while making a request to %s. Exception %s', target_url, ex)
+                code = 0
+                response_title = ''
 
-        self.logger.info('Some services are broken, will notify')
-        subject = 'Some services are not ok'
-        notify(subject, message)
+            target['code'] = code
+            target['response_title'] = response_title
+            self.logger.info('Code for "%s" (%s) is %d, title %s',
+                             target_name,
+                             target_url,
+                             code,
+                             response_title)
+            self.db.add_entry_for_target(target)
+            updated_targets.append(target)
+            if code != previous_code:
+                if code < 200 or code > 299:
+                    broken_target_messages.append(f'{target_name} is not OK. Code {code} and title {response_title}')
+                else:
+                    returned_target_messages.append(f'{target_name} is OK again. Code {code} and title {response_title}')
+
+        self.notify(config, broken_target_messages, returned_target_messages)
+        return updated_targets
+
+    def notify(self, config, broken_target_messages, returned_target_messages):
+        recipients = [x.strip() for x in config.get('email-recipients', '').split(',')]
+        if broken_target_messages:
+            subject = 'PdmV services are not OK'
+            message = 'Hello,\n\nThese PdmV services are not working:\n\n'
+            message += '\n'.join(broken_target_messages)
+            message += '\n\nSincerely,\nPdmV status checker at https://cms-pdmv.cern.ch/status'
+            self.logger.info('%s\n%s', subject, message)
+            send_email(subject, message, recipients)
+
+        if returned_target_messages:
+            subject = 'PdmV services are back'
+            message = 'Hello,\n\nThese PdmV services are working again:\n\n'
+            message += '\n'.join(returned_target_messages)
+            message += '\n\nSincerely,\nPdmV status checker at https://cms-pdmv.cern.ch/status'
+            self.logger.info('%s\n%s', subject, message)
+            send_email(subject, message, recipients)
 
 
 if __name__ == '__main__':
+    setup_console_logging()
     UpdateStatus().get()

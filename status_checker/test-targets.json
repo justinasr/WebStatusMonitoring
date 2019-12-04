@@ -2,28 +2,36 @@
     {
         "name": "McM Production website",
         "url": "https://cms-pdmv.cern.ch/mcm/",
+        "display_url": "https://cms-pdmv.cern.ch/mcm/",
         "target_id": "mcm-prod-web",
-        "cookie_path": "prod.cookie"
+        "cookie_path": "prod-cookie.txt"
     },
     {
-        "name": "McM Production couchDB",
+        "name": "McM Production DB",
         "url": "http://vocms090:5984/",
         "target_id": "mcm-prod-couchdb"
     },
     {
+        "name": "McM Development website",
+        "url": "https://cms-pdmv-dev.cern.ch/mcm/",
+        "display_url": "https://cms-pdmv-dev.cern.ch/mcm/",
+        "target_id": "mcm-dev-web",
+        "cookie_path": "dev-cookie.txt"
+    },
+    {
+        "name": "McM Development DB",
+        "url": "http://vocms085:5984/",
+        "target_id": "mcm-dev-couchdb"
+    },
+    {
         "name": "Web 418",
         "url": "http://httpstat.us/418",
+        "display_url": "http://httpstat.us/418",
         "target_id": "web418"
     },
     {
         "name": "Dead website",
         "url": "http://",
         "target_id": "dead"
-    },
-    {
-        "name": "pMp Elasticsearch",
-        "url": "https://cms-pdmv-dev.cern.ch/pmp/api/SMP-RunIISummer15GS-00193/historical/100/,/all/all",
-        "target_id": "pmp-elasticsearch",
-        "cookie_path": "dev.cookie"
     }
 ]

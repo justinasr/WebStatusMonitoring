@@ -1,140 +1,137 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <title>Status</title>
-        <link rel="shortcut icon" type="image/x-icon" href="https://png.icons8.com/metro/1600/system-info">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-        <script type="text/javascript">
-            // var time = 1000 * 60 * 3; // Every 3 minutes 
-            // var timeout = setTimeout("location.reload(true);", time);
-            // function resetTimeout() {
-            //     clearTimeout(timeout);
-            //     timeout = setTimeout("location.reload(true);", time);
-            // }
-
-            function updateTarget(target_id){
-                $.ajax({type: 'GET', url: "/update_status/" + target_id, success: function(result){
-                    var time = 1000 * 1;
-                    setTimeout("location.reload(true);", time);
-                }});
-            };
-        </script>
-        <style>
-            .card-footer{
-                position:absolute;
-                bottom:0;
-                width:100%;
-            }
-            .card-deck .card{
-                padding-bottom:58px;
-            }
-            .btn {
-                padding: 4px 8px;
-                margin-left: 3px;
-                margin-right: 3px;
-            }
-
-            @media (max-width: 575px) {
-                .card.invisible {
-                    display: none;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <h1 class="text-center">Is stuff ok?
-        {% if debug %}
-        <span style='color: red;'>Debug Mode</span>
+  <head>
+    <title>Status Checker</title>
+    <base href="/status/">
+    <link rel="shortcut icon" type="image/x-icon" href="https://png.icons8.com/metro/2x/spy.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
+    <script type="text/javascript">
+      function updateTarget(target_id){
+        console.log(window.location)
+        $.ajax({type: 'GET', url: "update_status/" + target_id, success: function(result){
+          setTimeout("window.location.reload(true);", 1000);
+        }});
+      };
+    </script>
+    <style>
+      body {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #2c3e50;
+      }
+      .card-footer{
+        position:absolute;
+        bottom:0;
+        left: 0;
+        width:100%;
+        background-color: transparent !important;
+        border-top: none !important;
+      }
+      .card-wrapper {
+        padding: 0;
+      }
+      .card-title {
+        font-size: 20px !important;
+        line-height: 1 !important;
+        letter-spacing: .02em !important;
+      }
+      .card{
+        padding:16px 16px 58px 16px;
+        margin: 6px;
+        border: none;
+        height: calc(100% - 12px);
+        line-height: 1.5rem;
+        color: rgba(0, 0, 0, 0.87);
+      }
+      .btn {
+        padding: 4px 8px;
+        margin-left: 3px;
+        margin-right: 3px;
+      }
+      .elevation-3 {
+        box-shadow: 0 3px 3px -2px rgba(0,0,0,.2),0 3px 4px 0 rgba(0,0,0,.14),0 1px 8px 0 rgba(0,0,0,.12) !important;
+      }
+      .elevation-10 {
+        box-shadow: 0 6px 6px -3px rgba(0,0,0,.2),0 10px 14px 1px rgba(0,0,0,.14),0 4px 18px 3px rgba(0,0,0,.12) !important;
+      }
+      .green {
+        background-color: #87d37c;
+      }
+      .red {
+        background-color: #ec644b;
+      }
+      .yellow {
+        background-color: #f4d76e;
+      }
+      .gray {
+        background-color: #dddddd;
+      }
+      .btn-round {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+      }
+      .page-title {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="text-center page-title">Status Checker
+    {% if debug %}
+    <span style='color: red; font-weight: 300;'>Debug Mode</span>
+    {% endif %}
+    </h1>
+    <div class="container">
+      <div class="row">
+      {% for entry in targets %}
+        <div class="card-wrapper text-center col-xs-12 col-sm-6 col-md-4 col-lg-3">
+        {% if entry.code == 200 %}
+          <div class="card elevation-10 green">
+        {% elif entry.code == 0 %}
+          <div class="card elevation-10 red">
+        {% elif entry.code == -1 %}
+          <div class="card elevation-10 gray">
+        {% else %}
+          <div class="card elevation-10 yellow">
         {% endif %}
-        </h1>
-        <h5 class="text-center">WebStatusMonitoring</h5>
-        <h6 class="text-center">Running on Python {{ version }}</h6>
-        <div class="container">
-            {% for entry in targets %}
-                {% if loop.index0 % 4 == 0 %}
-                <div class="card-deck mt-2">
-                {% endif %}
-                {% if entry.code == 200 %}
-                    <div style="background-color:#87D37C;" class="card text-center">
-                {% elif entry.code == 0 %}
-                    <div style="background-color:#EC644B;" class="card text-center">
-                {% elif entry.code == -1 %}
-                    <div style="background-color:#DDDDDD;" class="card text-center">
-                {% else %}
-                    <div style="background-color:#F5D76E;" class="card text-center">
-                {% endif %}
-                    <div style="padding: 5px;" class="card-block">
-                        <h4 class="card-title">{{ entry.name }}</h4>
-                        <p class="card-text">
-                        {% if entry.code == 200 %}
-                            Looks fine.
-                        {% elif entry.code == 0 %}
-                            Appears to be dead...
-                        {% elif entry.code == -1 %}
-                            Hasn't been checked yet.
-                        {% else %}
-                            Returns error code "<b>{{ entry.code }}</b>".
-                        {% endif %}
-                        <br>
-                        {% if entry.code != -1 %}
-                        Checked: {{ entry.checked }}
-                        {% endif %}
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="btn btn-primary" onclick=updateTarget("{{ entry.target_id }}")>Update now</a>
-                        {% if entry.display_url %}
-                            <a href="{{ entry.display_url }}" class="btn btn-primary">Go there</a>
-                        {% endif %}
-                    </div>
-                </div>
-                {% if (loop.index0 + 1) % 4 == 0 %}
-                </div>
-                {% endif %}
-            {% endfor %}
-
-            {% if (targets|length) % 4 != 0 %}
-                {% for n in range(4 - (targets|length) % 4) %}
-                    <div class="card invisible"></div>
-                {% endfor %}
-                </div>
-            {% endif %}
-            <button class="btn btn-primary mt-2" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Toggle all logs</button>
-            <a href="#" class="btn btn-primary mt-2" onclick=updateTarget("")>Update all</a>
-            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                <table class="table mt-2">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Date</th>
-                            <th>Instance</th>
-                            <th>Code</th>
-                            <th>Output title</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in all_logs %}
-                            <tr>
-                                {% if entry.code == 200 %}
-                                    <td style="padding:0; margin:0; width:1px; background-color:#87D37C;"></td>
-                                {% elif entry.code == 0 %}
-                                    <td style="padding:0; margin:0; width:1px; background-color:#EC644B;"></td>
-                                {% else %}
-                                    <td style="padding:0; margin:0; width:1px; background-color:#F5D76E;"></td>
-                                {% endif %}
-                                <td>{{ entry.date }}</td>
-                                <td>{{ entry.name }}</td>
-                                <td>{{ entry.code }}</td>
-                                <td style="max-width: 300px;">{{ entry.output_title }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div style="padding: 5px;" class="card-block">
+              <h5 class="card-title">{{ entry.name }}</h5>
+              <p class="card-text">
+              {% if entry.code == 200 %}
+                Looks fine!
+              {% elif entry.code == 0 %}
+                Appears to be dead...
+              {% elif entry.code == -1 %}
+                Hasn't been checked yet.
+              {% else %}
+                Returns error code "<b>{{ entry.code }}</b>".
+              {% endif %}
+              <br>
+              Title: {{ entry.response_title }}
+              <br>
+              {% if entry.code != -1 %}
+              Checked: {{ entry.checked }}
+              {% endif %}
+              </p>
             </div>
-        </div> 
-    </body>
+            <div class="card-footer">
+              <a href="#" title="Check status for {{ entry.name }}" class="btn btn-primary btn-round elevation-3" onclick='event.preventDefault(); updateTarget("{{ entry.target_id }}")'></a>
+              {% if entry.display_url %}
+                <a href="{{ entry.display_url }}" title="Go to {{ entry.name }}" target="_blank" class="btn btn-primary btn-round elevation-3"></a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div> 
+  </body>
 </html>
